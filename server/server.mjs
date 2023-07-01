@@ -1,6 +1,6 @@
 import express from 'express';
 const app = express();
-const port = 3000;
+const port = 5050;
 
 // Define a route handler for the root URL
 app.get('/', (req, res) => {
