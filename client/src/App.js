@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 
+// Adding comment to test git commit/push
 function App() {
   return (
     <div className="App">
