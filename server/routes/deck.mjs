@@ -1,6 +1,7 @@
 import express from 'express';
-import db from "../config/db.mjs"
-import CARDS from "../resources/cardslist.mjs"
+import db from "../config/db.mjs";
+import CARDS from "../resources/cardslist.mjs";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
@@ -75,7 +76,7 @@ router.get('/deck/new', async (req, res) => {
 // }
 router.patch('/draw/:pile_id/:number', async (req, res) => {
     let query = {_id: new ObjectId(req.params.pile_id)};
-    let number = req.params.number;
+    let number = parseInt(req.params.number);
 
     let collection = await db.collection("decks");
     let deck = await collection.findOne(query);
@@ -84,12 +85,28 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
         res.send("pile not found").status(404);
     }
     let cards_list = new Array();
-    for(let i = deck.index; i < number + deck.index; i++)
+    let deck_index = deck.index;
+    for(let i = deck_index; i < number + deck_index; i++)
     {
-        cards_list.push(deck.list[i]);
+        let card_id = (deck.list[i]);
+        let card_rank = card_id % 13;
+        let reference = CARDS.cards[card_id]
+        cards_list.push(
+            {
+                card: card_id,
+                rank: card_rank,
+                reference: reference
+            }
+        )
     }
-
-    res.send(cards_list).status(200);
+    let updateResult = await collection.updateOne(query, {$set: {index: deck_index + number}});
+    
+    const result = 
+    {
+        success: updateResult,
+        cards: cards_list
+    }
+    res.send(result).status(200);
 });
 
 
