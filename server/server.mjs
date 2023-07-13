@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from "cors";
+import "./config/loadEnvironment.mjs";
 import db from "./config/db.mjs"
 
 const app = express();
