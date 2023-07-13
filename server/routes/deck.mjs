@@ -41,7 +41,7 @@ router.get('/deck/new', async (req, res) => {
     }
     shuffle(decklist);
     let deck = {
-        list : decklist,
+        card_list : decklist,
         index : 0
     }
     let collection = await db.collection("decks");
@@ -75,6 +75,7 @@ router.get('/deck/new', async (req, res) => {
 //   "remaining": 50
 // }
 router.patch('/draw/:pile_id/:number', async (req, res) => {
+    //TODO: do not allow to draw more cards than there are left.
     let query = {_id: new ObjectId(req.params.pile_id)};
     let number = parseInt(req.params.number);
 
@@ -89,8 +90,8 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
     for(let i = deck_index; i < number + deck_index; i++)
     {
         let card_id = (deck.list[i]);
-        let card_rank = card_id % 13;
-        let reference = CARDS.cards[card_id]
+        let card_rank = (card_id % 13) + 1;
+        let reference = CARDS.cards[card_id - 1]
         cards_list.push(
             {
                 card: card_id,
@@ -99,12 +100,15 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
             }
         )
     }
-    let updateResult = await collection.updateOne(query, {$set: {index: deck_index + number}});
+    let new_index = deck_index + number
+    let updateResult = await collection.updateOne(query, {$set: {index: new_index}});
     
     const result = 
     {
         success: updateResult,
-        cards: cards_list
+        cards: cards_list,
+        pile_id: req.params.pile_id,
+        remaining: deck.list.length - new_index
     }
     res.send(result).status(200);
 });
@@ -112,8 +116,11 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
 
 // ----------------------------------------------
 // Create pile
-// url: /new_pile/{id of original pile}/{new pile name}/{number of cards}
-// request body: none
+// url: /new_pile/{id of original pile}/
+// request body: {
+//                  pile_name: "name of the new pile"
+//                  number_of_cards: "number of cards the new pile has"
+//                 }
 // CreatePile(3p40paa87x90, discard_1, 20)
 // returns the following object:
 // {
@@ -122,16 +129,45 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
 //   "pile_id": "3p40paa87x90_discard_1",
 //   "remaining": 20
 // }
-router.get('/new_pile/:pile_id/:new_pile_name/:number', async (req, res) => {
+router.post('/new_pile/:pile_id/', async (req, res) => {
+    let query = {_id: new ObjectId(req.params.pile_id)};
+    let pile_name = req.body.pile_name;
+    let number = req.body.number_of_cards;
 
-
+    let collection = await db.collection("decks");
+    let deck = await collection.findOne(query);
+    if(!deck)
+    {
+        res.send("pile not found").status(404);
+    }
+    let cards_list = new Array();
+    let deck_index = deck.index;
+    for(let i = deck_index; i < number + deck_index; i++)
+    {
+        cards_list.push(deck.list[i]);
+    }
+    let new_pile = {
+        _id: new ObjectId(req.params.pile_id + pile_name),
+        card_list: cards_list,
+        index: 0
+    }
+    let new_index = deck_index + number;
+    //TODO: return more 404's and 500's
+    let updateResult = await collection.updateOne(query, {$set: {index: new_index}});
+    let createResult = await collection.insertOne(new_pile);
+    let result = {
+        update: updateResult,
+        create: createResult,
+        new_pile: new_pile
+    }
+    res.send(result).status(200);
 });
 
 // ----------------------------------------------
 // Add cards to pile
 // url: /add/{pile id}
-// request body: array of cards
-// AddToPile(3p40paa87x90_discard_1, 2)
+// request body: cards: array of cards
+// AddToPile(3p40paa87x90_discard_1)
 // returns the following object:
 // {
 //   "success": true,
@@ -139,15 +175,17 @@ router.get('/new_pile/:pile_id/:new_pile_name/:number', async (req, res) => {
 //   "remaining": 22
 // }
 router.post('/add/:pile_id', async (req, res) => {
-
-
+    let collection = await db.collection("decks");
+    let query = {_id: new ObjectId(req.params.pile_id)};
+    let result = await collection.updateOne(query, {$push: {card_list: {each: req.body.cards}}});
+    res.send(result).status(200);
 });
 
 // ----------------------------------------------
 // Combine and shuffle piles
 // url: /combine/{final pile id}
-// request body: array of pile id's
-// CombinePiles([3p40paa87x90_discard_1, 3p40paa87x90_discard_2], discard_3)
+// request body: piles: array of pile id's
+// CombinePiles([3p40paa87x90_discard_1, 3p40paa87x90_discard_2], 3p40paa87x90_discard_3)
 // returns the following object:
 // {
 //   "success": true,
@@ -155,8 +193,43 @@ router.post('/add/:pile_id', async (req, res) => {
 //   "pile_id": "3p40paa87x90_discard_3",
 // }
 router.post('/combine/:pile_id', async (req, res) => {
+    let collection = await db.collection("decks");
+    let piles = req.body.piles;
+    let final_pile = new Array();
+    for(let i = 0; i < piles.length; i++)
+    {
+        for(let j = piles[i].index; j < piles[i].card_list.length; j++)
+        {
+            final_pile.push(piles[i].card_list[j]);
+        }
+        let deleteQuery = {_id: new ObjectId(piles[i]._id)};
+        let deleteResult = await collection.deleteOne(deleteQuery);
+    }
+    shuffle(final_pile);
+    query = {_id: new ObjectId(req.params.pile_id)};
+    let result = await collection.insertOne(query, {$set: {card_list: final_pile, index: 0}});
+    finalResult = {
+        success: result,
+        remaining: final_pile.length,
+        pile_id: req.params.pile_id
+    }
+    res.send(result).status(200);
+});
 
-
+// ----------------------------------------------
+// Delete pile
+// url: /delete/{pile id}
+// request body: none
+// DeletePile(3p40paa87x90_discard_1)
+// returns the following object:
+// {
+//   "success": true,
+// }
+router.delete('/delete/:pile_id', async (req, res) => {
+    let collection = await db.collection("decks");
+    let query = {_id: new ObjectId(req.params.pile_id)};
+    let result = await collection.deleteOne(query);
+    res.send(result).status(200);
 });
 
 export default router;
