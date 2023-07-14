@@ -91,7 +91,7 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
     {
         let card_id = (deck.list[i]);
         let card_rank = (card_id % 13) + 1;
-        let reference = CARDS.cards[card_id - 1]
+        let reference = CARDS[card_id - 1];
         cards_list.push(
             {
                 card: card_id,
