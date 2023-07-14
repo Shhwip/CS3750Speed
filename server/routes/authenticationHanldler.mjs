@@ -42,14 +42,16 @@ router.post("/register", async (req, res) => {
 
   const userExist = await checkUserExist(collection, userName, email);
   if (userExist) {
+    console.log(userExist);
     return res.status(409).send(userExist);
   }
 
   let result = await collection.insertOne({ userName, email, password, salt });
   sessionMiddleware(req, res, () => {
     req.session.user = { email }; // Save user to session upon successful registration
-    res.status(200).send(result);
+    
   });
+  res.status(200).send(result);
 });
 
 //get salt

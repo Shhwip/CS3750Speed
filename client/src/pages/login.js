@@ -34,16 +34,16 @@ export default function LoginPage() {
         }
         else {
             event.preventDefault();
-            const username = form.elements.name.value;
+            const email = form.elements.email.value;
             const password = form.elements.password.value;
             let clientHashedPassword = ""
             // Fetch the salt
-            const saltResponse = await fetch("http://localhost:5050/getSalt", {
+            const saltResponse = await fetch("http://localhost:5050/api/authentication/getSalt", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name: username }),
+                body: JSON.stringify({ email: email }),
             })
             .then(response => {
                 // Check if the request was successful
@@ -68,12 +68,12 @@ export default function LoginPage() {
                 console.error('Error:', error);
             });
 
-            const isMatch = await fetch("http://localhost:5050/login", {
+            const isMatch = await fetch("http://localhost:5050/api/authentication/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name: username, password: clientHashedPassword }),
+                body: JSON.stringify({ email: email, password: clientHashedPassword }),
             })
             .then(response => {
                 // Check if the request was successful
@@ -88,7 +88,7 @@ export default function LoginPage() {
                 const { match } = data;
                 //console.log(sha256(password).toString());
                 if(match){
-                    navigate("/loginSuccess")
+                    navigate("/lobby")
                 }
                 else{
                     throw new Error();
@@ -108,13 +108,13 @@ export default function LoginPage() {
             <Col md={6}>
                 <h1>Login</h1>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="formUserName">
-                        <Form.Label>Username</Form.Label>
+                    <Form.Group className="mb-3" controlId="formEmail">
+                        <Form.Label>Email</Form.Label>
                         <Form.Control
-                            name="name"
+                            name="email"
                             required
-                            type="text"
-                            placeholder="Enter username"
+                            type="email"
+                            placeholder="Enter email"
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formPassword">
