@@ -46,7 +46,7 @@ router.get('/deck/new', async (req, res) => {
     }
     let collection = await db.collection("decks");
     let result = await collection.insertOne(deck);
-    res.send(result).status(204);
+    res.send(result).status(200);
 });
 
 
@@ -89,7 +89,7 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
     let deck_index = deck.index;
     for(let i = deck_index; i < number + deck_index; i++)
     {
-        let card_id = (deck.list[i]);
+        let card_id = (deck.card_list[i]);
         let card_rank = (card_id % 13) + 1;
         let reference = CARDS[card_id - 1];
         cards_list.push(
@@ -108,7 +108,7 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
         success: updateResult,
         cards: cards_list,
         pile_id: req.params.pile_id,
-        remaining: deck.list.length - new_index
+        remaining: deck.card_list.length - new_index
     }
     res.send(result).status(200);
 });
