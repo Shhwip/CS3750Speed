@@ -26,3 +26,17 @@ describe('draw a card', () => {
   });
 });
 
+describe('create pile from deck', () => {
+  test('should return a pile', async() => {
+    const response = await request(url).post('/new_pile/' + deck_id + '/')
+    .send({pile_name: "discard_1", number_of_cards: 20})
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json');
+    expect(response.body.new_pile.pile_name).toBe("discard_1");
+    expect(response.body.new_pile.pile_id).toBe(deck_id + "_discard_1");
+    expect(response.body.new_pile.remaining).toBe(20);
+    expect(response.body.new_pile.index).toBe(0);
+    expect(response.statusCode).toBe(200);
+  });
+});
+

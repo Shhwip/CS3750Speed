@@ -4,6 +4,7 @@ import "./config/loadEnvironment.mjs";
 import db from "./config/db.mjs"
 import api from "./routes/api.mjs"
 import deck from "./routes/deck.mjs"
+import bodyParser from "body-parser";
 
 const app = express();
 
@@ -12,7 +13,8 @@ const port = 5050;
 
 //const router = express.Router();
 
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use("/", deck);
 app.use(express.json());

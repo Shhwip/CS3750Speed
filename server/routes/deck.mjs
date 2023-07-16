@@ -131,6 +131,7 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
 // }
 router.post('/new_pile/:pile_id/', async (req, res) => {
     let query = {_id: new ObjectId(req.params.pile_id)};
+    console.log(req.body);
     let pile_name = req.body.pile_name;
     let number = req.body.number_of_cards;
 
@@ -144,12 +145,14 @@ router.post('/new_pile/:pile_id/', async (req, res) => {
     let deck_index = deck.index;
     for(let i = deck_index; i < number + deck_index; i++)
     {
-        cards_list.push(deck.list[i]);
+        cards_list.push(deck.card_list[i]);
     }
     let new_pile = {
-        _id: new ObjectId(req.params.pile_id + pile_name),
+        pile_name: pile_name,
+        pile_id: req.params.pile_id + "_" + pile_name,
         card_list: cards_list,
-        index: 0
+        index: 0,
+        remaining: cards_list.length
     }
     let new_index = deck_index + number;
     //TODO: return more 404's and 500's
