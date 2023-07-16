@@ -180,7 +180,7 @@ router.post('/new_pile/:pile_id/', async (req, res) => {
 router.post('/add/:pile_id', async (req, res) => {
     let collection = await db.collection("decks");
     let query = {_id: new ObjectId(req.params.pile_id)};
-    let result = await collection.updateOne(query, {$push: {card_list: {each: req.body.cards}}});
+    let result = await collection.updateOne(query, {$push: {card_list: {$each: req.body.cards}}});
     res.send(result).status(200);
 });
 
@@ -196,27 +196,37 @@ router.post('/add/:pile_id', async (req, res) => {
 //   "pile_id": "3p40paa87x90_discard_3",
 // }
 router.post('/combine/:pile_id', async (req, res) => {
+    console.log(req.body);
     let collection = await db.collection("decks");
-    let piles = req.body.piles;
-    let final_pile = new Array();
-    for(let i = 0; i < piles.length; i++)
+    let piles = new Array();
+    for(let i = 0; i < req.body.piles.length; i++)
     {
-        for(let j = piles[i].index; j < piles[i].card_list.length; j++)
+        piles.push(new ObjectId(req.body.piles[i]));
+    }
+    let query = {_id: {$in: piles}};
+    const cursor = collection.find(query);
+    console.log(await collection.countDocuments(query));
+    let final_pile = new Array();
+    for await(const doc of cursor)
+    {
+        console.log(doc);
+        for(let j = doc.index; j < doc.card_list.length; j++)
         {
-            final_pile.push(piles[i].card_list[j]);
+            console.log(doc.card_list[j]);
+            final_pile.push(doc.card_list[j]);
         }
-        let deleteQuery = {_id: new ObjectId(piles[i]._id)};
-        let deleteResult = await collection.deleteOne(deleteQuery);
     }
     shuffle(final_pile);
     query = {_id: new ObjectId(req.params.pile_id)};
-    let result = await collection.insertOne(query, {$set: {card_list: final_pile, index: 0}});
-    finalResult = {
+    let result = await collection.updateOne(query, {$set: {card_list: final_pile, index: 0}});
+    let finalResult = {
         success: result,
         remaining: final_pile.length,
         pile_id: req.params.pile_id
-    }
-    res.send(result).status(200);
+    };
+    console.log("final result");
+    console.log(finalResult);
+    res.send(finalResult).status(200);
 });
 
 // ----------------------------------------------
