@@ -131,7 +131,6 @@ router.patch('/draw/:pile_id/:number', async (req, res) => {
 // }
 router.post('/new_pile/:pile_id/', async (req, res) => {
     let query = {_id: new ObjectId(req.params.pile_id)};
-    console.log(req.body);
     let pile_name = req.body.pile_name;
     let number = req.body.number_of_cards;
 
@@ -196,7 +195,6 @@ router.post('/add/:pile_id', async (req, res) => {
 //   "pile_id": "3p40paa87x90_discard_3",
 // }
 router.post('/combine/:pile_id', async (req, res) => {
-    console.log(req.body);
     let collection = await db.collection("decks");
     let piles = new Array();
     for(let i = 0; i < req.body.piles.length; i++)
@@ -205,14 +203,11 @@ router.post('/combine/:pile_id', async (req, res) => {
     }
     let query = {_id: {$in: piles}};
     const cursor = collection.find(query);
-    console.log(await collection.countDocuments(query));
     let final_pile = new Array();
     for await(const doc of cursor)
     {
-        console.log(doc);
         for(let j = doc.index; j < doc.card_list.length; j++)
         {
-            console.log(doc.card_list[j]);
             final_pile.push(doc.card_list[j]);
         }
     }
@@ -224,8 +219,6 @@ router.post('/combine/:pile_id', async (req, res) => {
         remaining: final_pile.length,
         pile_id: req.params.pile_id
     };
-    console.log("final result");
-    console.log(finalResult);
     res.send(finalResult).status(200);
 });
 
