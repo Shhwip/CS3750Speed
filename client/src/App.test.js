@@ -120,3 +120,17 @@ describe('Draw 52 unique cards', () => {
     expect(response.statusCode).toBe(200);
   });
 });
+
+describe('delete piles', () => {
+  test('should delete all test piles', async() => {
+    const response = await request(url).delete('/delete/' + pile_id2 + '/');
+    expect(response.body.deletedCount).toBe(1);
+    expect(response.statusCode).toBe(200);
+    const response2 = await request(url).delete('/delete/' + pile_id1 + '/');
+    expect(response2.body.deletedCount).toBe(1);
+    expect(response2.statusCode).toBe(200);
+    const response3 = await request(url).delete('/delete/' + deck_id + '/');
+    expect(response3.body.deletedCount).toBe(1);
+    expect(response3.statusCode).toBe(200);
+  });
+});
