@@ -2,6 +2,7 @@ import express from 'express';
 import cors from "cors";
 import "./config/loadEnvironment.mjs";
 import db from "./config/db.mjs"
+import californiaSpeed from "./routes/games/californiaSpeed.mjs"
 import api from "./routes/api.mjs"
 import deck from "./routes/deck.mjs"
 import bodyParser from "body-parser";
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use("/", deck);
+app.use("/game", californiaSpeed);
 app.use(express.json());
 
 

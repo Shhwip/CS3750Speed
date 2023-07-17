@@ -176,6 +176,8 @@ router.post('/new_pile/:pile_id/', async (req, res) => {
 //   "pile_id": "3p40paa87x90_discard_1",
 //   "remaining": 22
 // }
+//TODO: PUT THE CARD AT THE FRONT NOT THE BACK OF THE LIST
+//LIFO!!!
 router.post('/add/:pile_id', async (req, res) => {
     let collection = await db.collection("decks");
     let query = {_id: new ObjectId(req.params.pile_id)};
