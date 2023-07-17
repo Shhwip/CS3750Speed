@@ -102,7 +102,14 @@ export default function LoginPage() {
 
         setValidated(true);
     };
-    return (<Container>
+    return (
+    <div>
+        {/* Added navbar specific to login page with no external links */}
+        <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+            <a class="navbar-brand" href="/">Group Out of Town - Login</a>
+        </nav>
+    
+    <Container>
         <AlertError />
         <Row>
             <Col md={6}>
@@ -154,5 +161,6 @@ export default function LoginPage() {
                 </Form>
             </Col>
         </Row>
-    </Container>)
+    </Container>
+    </div>)
 }
