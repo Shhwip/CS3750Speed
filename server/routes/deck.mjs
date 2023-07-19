@@ -31,7 +31,7 @@ function shuffle(array) {
 // returns the following object:
 //{
 //    "acknowledged": true,
-//    "insertedId": "64af4ef4a688f1539bebb87d"
+//    "insertedId": "3p40paa87x90"
 //}
 router.get('/deck/new', async (req, res) => {
     let decklist = new Array(52);
@@ -46,6 +46,7 @@ router.get('/deck/new', async (req, res) => {
     }
     let collection = await db.collection("decks");
     let result = await collection.insertOne(deck);
+    console.log(result)
     res.send(result).status(200);
 });
 
