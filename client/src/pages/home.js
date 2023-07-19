@@ -18,6 +18,9 @@ const HomePage = () => {
           <li class="nav-item">
             <a class="nav-link" href="/lobby">Lobby</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/game">Play</a>
+          </li>
         </ul>
       </div>
     </nav>

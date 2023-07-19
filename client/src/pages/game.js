@@ -12,15 +12,15 @@ const Game = () => {
     
         const deck1Click = async() => {
 
-            const pileId = "64b35dd0fb478c43591ff0b2discard_1"; 
+            const pileId = "64b35b7372c06695697c7262"; 
             const numberOfCardsToDraw = 2;
                
             try {
-                  const response = await fetch('http://localhost:5050/draw/${pileId}/${numberOfCardsToDraw}');
+                  const response = await fetch(`http://localhost:5050/draw/${pileId}/${numberOfCardsToDraw}`);
                   const data = await response.json();
             
                   if (response.ok) {
-                    const cardReference = data.reference;
+                    const cardReference = data.card_list;
                     setDrawPile1(cardReference)
                     console.log(cardReference);
                   } else {
