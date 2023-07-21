@@ -142,7 +142,8 @@ const Game = () => {
   };
 
   /*
-    * 
+    Shuffles two piles and shuffles them. 
+    **Not Finished
   */
   const shuffleClick = async () => {
     setDrawPile1("");
