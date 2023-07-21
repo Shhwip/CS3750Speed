@@ -209,6 +209,8 @@ async function playCard(gameID, pile, player)
     return gameState;
 }
 
+// ----------------------------------------------
+// scoop up the 4 piles into the player's deck, shuffle, and redeal
 async function scoop(gameID)
 {
     let gameState = (await getGameState(gameID)).gameState;
@@ -216,16 +218,7 @@ async function scoop(gameID)
     console.log(gameState);
     let player1deck = gameState.player1deck;
     let player2deck = gameState.player2deck;
-    let pile1 = gameState.pile1;
-    let pile2 = gameState.pile2;
-    let pile3 = gameState.pile3;
-    let pile4 = gameState.pile4;
-    let pile5 = gameState.pile5;
-    let pile6 = gameState.pile6;
-    let pile7 = gameState.pile7;
-    let pile8 = gameState.pile8;
 
-    //TODO: clean this up
     for(let i = 0; i < 5; i++)
     {
         for(let cards in gameState["pile" + (i * 2 + 2)])//even piles are player2
