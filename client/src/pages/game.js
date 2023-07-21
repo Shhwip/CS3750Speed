@@ -30,7 +30,7 @@ const Game = () => {
         console.log(data.insertedId);
         setDeckId(data.insertedId);
         setRender(true);
-        setTemp(!temp)
+        setTemp(true);
         window.alert("Created Deck");
       })
       .catch((error) => {
@@ -44,10 +44,10 @@ const Game = () => {
     New Deck ID and create two piles of 26 cards each.
     **
   */
+
   useEffect(() => {
     if(!render){return}
     const fetchPiles1 = async () => {
-      //if (render) {
         const deckPile1 = { pile_name: "pile_1", number_of_cards: 26 };
         await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
           method: "POST",
@@ -70,11 +70,8 @@ const Game = () => {
             window.alert(error);
             return;
           });
-      //}
     };
-    console.log("Waiting for pile1");
     const fetchPiles2 = async () => { 
-      //if (render) {
         const deckPile2 = { pile_name: "pile_2", number_of_cards: 26 };
         await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
           method: "POST",
@@ -97,14 +94,12 @@ const Game = () => {
             window.alert(error);
             return;
           });
-      //}
     };
     
-    //setRender(false);
     fetchPiles1();
     fetchPiles2();
 
-  }, [temp]);
+  },[deckId]);
 
   /*
     Fetches image reference from mongodb to display image after draw is clicked. Using pileId1 
@@ -125,7 +120,8 @@ const Game = () => {
       });
   };
 
-    /*
+  
+  /*
     Fetches image reference from mongodb to display image after draw is clicked. Using pileId2 
   */
   const deck2Click = async () => {
@@ -151,6 +147,29 @@ const Game = () => {
   const shuffleClick = async () => {
     setDrawPile1("");
     setDrawPile2("");
+    const shuffledDeck = {piles: {pileId1,pileId2}};
+    await fetch(`http://localhost:5050/combine/shuffledDeck`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(shuffledDeck),
+        })
+    .then((response) => {
+      if (!response.ok) {
+        throw Error("Could not fetch Data");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      setDeckId(data.pile_id);
+      window.alert("Deck Shuffled");
+    })
+    .catch((error) => {
+      window.alert(error);
+      return;
+    });
   };
 
   return (
