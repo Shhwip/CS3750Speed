@@ -33,7 +33,7 @@ function shuffle(array) {
 //    "acknowledged": true,
 //    "insertedId": "3p40paa87x90"
 //}
-router.get('/deck/new', async (req, res) => {
+router.post('/deck/new', async (req, res) => {
     let decklist = new Array(52);
     for(let i = 0; i < 52; i++)
     {
@@ -139,10 +139,11 @@ router.post('/new_pile/:pile_id/', async (req, res) => {
     let deck = await collection.findOne(query);
     if(!deck)
     {
-        res.send("pile not found").status(404);
+        res.send("deck not found").status(404);
     }
     let cards_list = new Array();
     let deck_index = deck.index;
+    console.log(deck_index);
     for(let i = deck_index; i < number + deck_index; i++)
     {
         cards_list.push(deck.card_list[i]);
