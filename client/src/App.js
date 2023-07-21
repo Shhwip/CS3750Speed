@@ -22,10 +22,9 @@ function App() {
           <Route element={<RoutesWithUserChatComponent/>}>
             <Route path="/lobby" element={<LobbyPage />} />
             <Route path="/game" element={<GamePage />} />
+            <Route path="/game/california" element={<CaliforniaPage />} />
           </Route>
-          <Route path="/lobby" element={<LobbyPage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/game/california" element={<CaliforniaPage />} />
+         
         </Routes>
     </>
   );
