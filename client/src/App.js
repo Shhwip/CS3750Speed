@@ -6,6 +6,7 @@ import RegisterForm from "./pages/register";
 import LobbyPage from "./pages/lobby";
 import GamePage from "./pages/game";
 import RoutesWithUserChatComponent from "./components/RoutesWithChatComponent";
+import CaliforniaPage from "./pages/california";
 
 function DisplayData({ record }) {
   return <h1>Group Name: {record.groupName}</h1>;
@@ -22,8 +23,10 @@ function App() {
             <Route path="/lobby" element={<LobbyPage />} />
             <Route path="/game" element={<GamePage />} />
           </Route>
+          <Route path="/lobby" element={<LobbyPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/game/california" element={<CaliforniaPage />} />
         </Routes>
-
     </>
   );
 }

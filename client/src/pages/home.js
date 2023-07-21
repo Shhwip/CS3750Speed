@@ -21,6 +21,9 @@ const HomePage = () => {
           <li class="nav-item">
             <a class="nav-link" href="/game">Play</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/game/california">California</a>
+          </li>
         </ul>
       </div>
     </nav>
