@@ -1,4 +1,33 @@
-function lobbyPage() {
+import React, { useState, useEffect } from "react";
+
+function LobbyPage({socket}) {
+    const [currentMessage, setCurrentMessage] = useState(""); 
+    const [messageList, setMessageList] = useState([]);
+
+    const sendMessage = async () => {
+        if (currentMessage !== "") {
+            const messageData = {
+                message: currentMessage,
+            };
+            await socket.emit("send_message", messageData);
+        }
+    }
+
+    function handleClick() {
+        console.log('send message to server');
+        socket.emit('msg', {message: "Pre-set Message"});
+        console.log('message sent');
+    }
+    
+    useEffect(() => {
+        socket.on("receive_message", (data) => {
+            console.log(data);
+            setMessageList((list) => [...list, data]);
+        });
+
+    }, [socket]);
+
+
     return (
     <div>
         {/* Added navbar links, Rules page redirect to home page, are we having home page 
@@ -20,8 +49,19 @@ function lobbyPage() {
                 </ul>
             </div>
         </nav>
-        This is lobby page
+        <p>This is lobby page, basic chat function</p>
+        <div>
+            {messageList.map((messageContent) => {
+                return <p>{messageContent.message}</p>;
+            })}
+        </div>
+        <input type="text" placeholder="Message" onChange={(event) => {
+            setCurrentMessage(event.target.value);
+        }}/>
+        <button onClick={sendMessage}>Send custom message</button>
+        <button onClick={handleClick}>Send pre-set message</button>
+
     </div>
 )}
 
-export default lobbyPage;
+export default LobbyPage;
