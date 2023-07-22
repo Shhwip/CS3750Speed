@@ -1,0 +1,124 @@
+/* Chat button styles */
+.chat-btn {
+    position: fixed;
+    right: 8px;
+    bottom: 10px;
+    cursor: pointer;
+    background-color: rgb(136, 166, 231);
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 22px;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-btn .close {
+    display: none;
+}
+
+#check:checked ~ .chat-btn i {
+    display: block;
+}
+
+#check:checked ~ .chat-btn .comment {
+    display: none;
+}
+
+#check {
+    display: none !important;
+}
+
+#check:checked ~ .chat-wrapper {
+    opacity: 1;
+}
+
+/* Chat wrapper styles */
+.chat-wrapper {
+    opacity: 0;
+    position: fixed;
+    right: 60px;
+    bottom: 30px;
+    z-index: 2;
+    width: 300px;
+    transition: all 0.4s;
+    background-color: white;
+    border-radius: 5px;
+    box-sizing: border-box; /* added this to ensure consistent width with padding */
+    
+}
+
+/* Chat header styles */
+.chat-header {
+    background-color: rgb(19, 19, 41);
+    padding: 13px;
+    margin-bottom: 0px;
+    border-radius: 5px 5px 0px 0px;
+    color: white;
+    box-sizing: border-box; /* ensures padding is included in width */
+}
+
+/* Chat form styles */
+.chat-form {
+    padding: 5px;
+    border: 1px solid #000;
+}
+
+.chat-form input, 
+.chat-form textarea,
+.chat-form button {
+    margin-bottom: 5px;
+}
+
+.chat-form textarea {
+    resize: none;
+    box-sizing: border-box; /* ensures padding is included in width */
+}
+
+.form-control:focus,
+.btn:focus {
+    box-shadow: none;
+}
+
+.cht-msg {
+    max-height: 300px;
+    overflow: auto;
+    box-sizing: border-box; /* ensures padding is included in width */
+}
+
+/* Textarea container */
+.textarea-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.form-control {
+    flex: 1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    box-sizing: border-box; /* ensures padding is included in width */
+}
+
+.inside-textarea-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 0.5em 1em;
+    box-sizing: border-box; /* ensures padding is included in width */
+}
+
+.chat-form * {
+    margin: 0;
+}
+
+.chat-form input, 
+.chat-form textarea,
+.chat-form button {
+    margin-bottom: 5px;
+}
+.cht-msg div, .cht-msg p {
+    margin-bottom: 15px; 
+}
