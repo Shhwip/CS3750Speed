@@ -31,7 +31,7 @@ const Game = () => {
         console.log(data.insertedId);
         setDeckId(data.insertedId);
         setRender(true);
-        setTemp(!temp)
+        setTemp(true);
         window.alert("Created Deck");
       })
       .catch((error) => {
@@ -106,7 +106,8 @@ const Game = () => {
       });
   };
 
-    /*
+  
+  /*
     Fetches image reference from mongodb to display image after draw is clicked. Using pileId2 
   */
   const deck2Click = async () => {
@@ -127,11 +128,35 @@ const Game = () => {
   };
 
   /*
-    * 
+    Shuffles two piles and shuffles them. 
+    **Not Finished
   */
   const shuffleClick = async () => {
     setDrawPile1("");
     setDrawPile2("");
+    const shuffledDeck = {piles: {pileId1,pileId2}};
+    await fetch(`http://localhost:5050/combine/shuffledDeck`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(shuffledDeck),
+        })
+    .then((response) => {
+      if (!response.ok) {
+        throw Error("Could not fetch Data");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      setDeckId(data.pile_id);
+      window.alert("Deck Shuffled");
+    })
+    .catch((error) => {
+      window.alert(error);
+      return;
+    });
   };
 
   return (
