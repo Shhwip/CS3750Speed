@@ -17,6 +17,7 @@ const Game = () => {
     Saves the new Deck ID information
   */
   const NewDeckClick = async () => {
+    console.log("NewDeck got click")
     await fetch(`http://localhost:5050/deck/new`, {
       method: "POST",
     })
@@ -44,68 +45,48 @@ const Game = () => {
     New Deck ID and create two piles of 26 cards each.
     **
   */
-  useEffect(() => {
-    if(!render){return}
-    const fetchPiles1 = async () => {
-      //if (render) {
-        const deckPile1 = { pile_name: "pile_1", number_of_cards: 26 };
-        await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deckPile1),
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw Error("Could not fetch Data");
-            }
-            return res.json();
-          })
-          .then((data) => {
-            setPileId1(data.new_pile._id);
-            console.log(data.new_pile._id)
-          })
-          .catch((error) => {
-            window.alert(error);
-            return;
-          });
-      //}
-    };
-    console.log("Waiting for pile1");
-    const fetchPiles2 = async () => { 
-      //if (render) {
-        const deckPile2 = { pile_name: "pile_2", number_of_cards: 26 };
-        await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(deckPile2),
-        })
-          .then((res) => {
-            if (!res.ok) {
-              throw Error("Could not fetch Data");
-            }
-            return res.json();
-          })
-          .then((data) => {
-            setPileId2(data.new_pile._id);
-            console.log(data.new_pile._id)
-          })
-          .catch((error) => {
-            window.alert(error);
-            return;
-          });
-      //}
-    };
-    
-    //setRender(false);
-    fetchPiles1();
-    fetchPiles2();
-
+    useEffect(() => {
+      if (!render) { return; }
+  
+      const fetchPiles = async () => {
+          const deckPile1 = { pile_name: "pile_1", number_of_cards: 26 };
+          try {
+              let response = await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(deckPile1),
+              });
+  
+              if (!response.ok) throw new Error("Could not fetch Data for pile 1");
+  
+              let data = await response.json();
+              setPileId1(data.new_pile._id);
+  
+              const deckPile2 = { pile_name: "pile_2", number_of_cards: 26 };
+              response = await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(deckPile2),
+              });
+  
+              if (!response.ok) throw new Error("Could not fetch Data for pile 2");
+  
+              data = await response.json();
+              setPileId2(data.new_pile._id);
+  
+          } catch (error) {
+              window.alert(error);
+          }
+      };
+  
+      fetchPiles();
+  
   }, [temp]);
-
+  
   /*
     Fetches image reference from mongodb to display image after draw is clicked. Using pileId1 
   */

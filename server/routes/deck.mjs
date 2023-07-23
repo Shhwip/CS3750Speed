@@ -46,7 +46,7 @@ router.post('/deck/new', async (req, res) => {
     }
     let collection = await db.collection("decks");
     let result = await collection.insertOne(deck);
-    console.log(result)
+    //console.log(result)
     res.send(result).status(200);
 });
 
@@ -137,13 +137,14 @@ router.post('/new_pile/:pile_id/', async (req, res) => {
 
     let collection = await db.collection("decks");
     let deck = await collection.findOne(query);
+
     if(!deck)
     {
         res.send("deck not found").status(404);
     }
     let cards_list = new Array();
     let deck_index = deck.index;
-    console.log(deck_index);
+    console.log("deckid: " + req.params.pile_id + ", pile name: " + pile_name + ", deck index: " + deck_index)
     for(let i = deck_index; i < number + deck_index; i++)
     {
         cards_list.push(deck.card_list[i]);
