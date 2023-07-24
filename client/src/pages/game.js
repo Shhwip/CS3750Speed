@@ -31,7 +31,7 @@ const Game = () => {
         console.log(data.insertedId);
         setDeckId(data.insertedId);
         setRender(true);
-        setTemp(true);
+        setTemp(!temp);
         window.alert("Created Deck");
       })
       .catch((error) => {
