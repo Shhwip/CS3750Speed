@@ -13,11 +13,8 @@ import { useState, useEffect } from "react";
 import GamePage from "./pages/game";
 import RoutesWithUserChatComponent from "./components/RoutesWithChatComponent";
 import CaliforniaPage from "./pages/california";
-<<<<<<< HEAD
 import { ProtectedRoute } from "./components/ProtectedRoute";
-=======
 import Classic from "./pages/classic";
->>>>>>> 1323662c781e5e0a2553a532b10e15c80c5c367b
 
 function DisplayData({ record }) {
   return <h1>Group Name: {record.groupName}</h1>;
