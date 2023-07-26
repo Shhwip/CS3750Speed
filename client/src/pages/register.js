@@ -80,6 +80,7 @@ export default function RegisterForm() {
       };
       await fetch("http://localhost:5050/api/authentication/register", {
         method: "POST",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },

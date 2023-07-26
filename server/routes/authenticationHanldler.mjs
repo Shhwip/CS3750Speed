@@ -48,8 +48,7 @@ router.post("/register", async (req, res) => {
 
   let result = await collection.insertOne({ userName, email, password, salt });
   sessionMiddleware(req, res, () => {
-    req.session.user = { email }; // Save user to session upon successful registration
-    
+    req.session.user = { userName }; // Save user to session upon successful registration
   });
   res.status(200).send(result);
 });
@@ -60,14 +59,13 @@ router.post("/getSalt", async (req, res) => {
 
   // Fetch user from database
   const collection = await db.collection("userAuthentication");
-  
-  const user = await collection.findOne({email: email });
+
+  const user = await collection.findOne({ email: email });
   if (!user) {
     res.status(404).send("Not found");
   } else {
     res.status(200).send({ salt: user.salt });
   }
- 
 });
 
 // Define the login endpoint
@@ -75,15 +73,26 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const collection = await db.collection("userAuthentication");
   const user = await collection.findOne({ email });
-
+  const userName = user.userName
   if (user.password === password) {
     sessionMiddleware(req, res, () => {
-      req.session.user = { email }; // Save user to session
+      req.session.user = { userName }; // Save user to session
       res.status(200).send({ match: true });
     });
   } else {
     res.status(200).send({ match: false });
   }
+});
+
+router.get("/isAuth", async (req, res) => {
+  sessionMiddleware(req, res, () => {
+    if (req.session.user) {
+      console.log("hello");
+      return res.json(req.session.user);
+    } else {
+      return res.status(401).json("unauthorize");
+    }
+  });
 });
 
 export default router;

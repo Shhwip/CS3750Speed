@@ -1,5 +1,36 @@
 import "../chats.css";
-const UserChatComponent = () => {
+import socket from "../socket";
+import { useState, useEffect } from "react";
+const UserChatComponent = ({ userName }) => {
+  const [messageList, setMessageList] = useState([]);
+  const [currentMessage, setCurrentMessage] = useState("");
+
+  useEffect(() => {
+    console.log("useEffect running");
+    const handleReceiveMessage = (data) => {
+      console.log(data);
+      setMessageList((list) => [...list, data]);
+    };
+
+    socket.on("receive_message", handleReceiveMessage);
+
+    // Unsubscribe when component unmounts
+    return () => {
+      socket.off("receive_message", handleReceiveMessage);
+    };
+  }, [socket]);
+
+  const sendMessage = async () => {
+    if (currentMessage !== "") {
+      const messageData = {
+        sender: userName,
+        message: currentMessage,
+      };
+      await socket.emit("send_message", messageData);
+      setCurrentMessage(""); // Clear the current message after sending
+    }
+  };
+
   return (
     <>
       <input type="checkbox" id="check" />
@@ -16,13 +47,15 @@ const UserChatComponent = () => {
         </div>
         <div className="chat-form">
           <div className="cht-msg">
-            {Array.from({ length: 10 }).map((_, id) => (
-              <div key={id}>
-                <p>
-                  <b>You wrote:</b> <i className="bi bi-emoji-expressionless"></i>
-                </p>
-                <p className="bg-primary p-3 ms-4 text-light rounded-pill">
-                  <b>Other wrote: </b> <i className="bi bi-emoji-smile"></i>
+            {messageList.map((msg, index) => (
+              <div key={index}>
+                <p
+                  className={`bg-${
+                    msg.sender === userName ? "secondary" : "primary"
+                  } p-3 ms-4 text-light rounded-pill`}
+                >
+                  <b>{msg.sender === userName ? "You" : userName} wrote:</b>
+                  {" " + msg.message}
                 </p>
               </div>
             ))}
@@ -32,8 +65,13 @@ const UserChatComponent = () => {
               id="clientChatMsg"
               className="form-control"
               placeholder="Your Text Message"
+              value={currentMessage}
+              onChange={(e) => setCurrentMessage(e.target.value)}
             ></textarea>
-            <button className="btn btn-primary inside-textarea-btn">
+            <button
+              className="btn btn-primary inside-textarea-btn"
+              onClick={sendMessage}
+            >
               <i className="bi bi-send"></i>
             </button>
           </div>

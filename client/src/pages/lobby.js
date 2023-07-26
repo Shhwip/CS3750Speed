@@ -20,12 +20,20 @@ function LobbyPage({socket}) {
     }
     
     useEffect(() => {
-        socket.on("receive_message", (data) => {
+        const handleReceiveMessage = (data) => {
             console.log(data);
             setMessageList((list) => [...list, data]);
-        });
-
+        };
+    
+        socket.on("receive_message", handleReceiveMessage);
+    
+        // Unsubscribe when component unmounts
+        return () => {
+            socket.off("receive_message", handleReceiveMessage);
+        };
+    
     }, [socket]);
+    
 
 
     return (

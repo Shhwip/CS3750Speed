@@ -70,6 +70,7 @@ export default function LoginPage() {
 
             const isMatch = await fetch("http://localhost:5050/api/authentication/login", {
                 method: "POST",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
