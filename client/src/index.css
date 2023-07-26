@@ -7,7 +7,49 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.container{
+  background: green;
+}
+
+.cards{
+  height: 100%;
+  padding-top: 2%;
+  padding-bottom:2.82%;
+  justify-content: center;
+
+}
+.row {
+  justify-content: center;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.card {
+  justify-content: center;
+  padding: 1.5rem;
+  transition: 0.2s;
+  box-shadow: 3px 3px 3px ;
+}
+
+.card:hover, 
+.card:focus-within {
+  transform: translatey(-1rem);
+}
+
+.card:hover ~ .card,
+.card:focus-within ~ .card  {
+  transform: translatex(var(--distance));
+}
+
+
+.textOverlay {
+  position: absolute; 
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  color: red;
+  font-size: 80px;  
+  
 }

@@ -13,7 +13,6 @@ import { useState, useEffect } from "react";
 import GamePage from "./pages/game";
 import RoutesWithUserChatComponent from "./components/RoutesWithChatComponent";
 import CaliforniaPage from "./pages/california";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function DisplayData({ record }) {
   return <h1>Group Name: {record.groupName}</h1>;
@@ -55,8 +54,12 @@ function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/game/california" element={<CaliforniaPage />} />
           <Route path="/lobby" element={<LobbyPage socket={socket} />} />
-        </Route>
-      </Routes>
+          <Route element={<RoutesWithUserChatComponent/>}>
+            <Route path="/game" element={<GamePage />} />
+            <Route path="/game/california" element={<CaliforniaPage />} />
+          </Route>
+         
+        </Routes>
     </>
   );
 }
