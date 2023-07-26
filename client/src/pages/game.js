@@ -18,6 +18,7 @@ const Game = () => {
     Saves the new Deck ID information
   */
   const NewDeckClick = async () => {
+    console.log("NewDeck got click")
     await fetch(`http://localhost:5050/deck/new`, {
       method: "POST",
     })
@@ -31,7 +32,7 @@ const Game = () => {
         console.log(data.insertedId);
         setDeckId(data.insertedId);
         setRender(true);
-        setTemp(true);
+        setTemp(!temp);
         window.alert("Created Deck");
       })
       .catch((error) => {
