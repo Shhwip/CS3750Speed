@@ -13,6 +13,11 @@ import { useState, useEffect } from "react";
 import GamePage from "./pages/game";
 import RoutesWithUserChatComponent from "./components/RoutesWithChatComponent";
 import CaliforniaPage from "./pages/california";
+<<<<<<< HEAD
+import { ProtectedRoute } from "./components/ProtectedRoute";
+=======
+import Classic from "./pages/classic";
+>>>>>>> 1323662c781e5e0a2553a532b10e15c80c5c367b
 
 function DisplayData({ record }) {
   return <h1>Group Name: {record.groupName}</h1>;
@@ -54,12 +59,8 @@ function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/game/california" element={<CaliforniaPage />} />
           <Route path="/lobby" element={<LobbyPage socket={socket} />} />
-          <Route element={<RoutesWithUserChatComponent/>}>
-            <Route path="/game" element={<GamePage />} />
-            <Route path="/game/california" element={<CaliforniaPage />} />
-          </Route>
-         
-        </Routes>
+        </Route>
+      </Routes>
     </>
   );
 }
