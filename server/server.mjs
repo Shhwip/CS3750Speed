@@ -6,6 +6,7 @@ import californiaSpeed from "./routes/games/californiaSpeed.mjs"
 import api from "./routes/api.mjs"
 import deck from "./routes/deck.mjs"
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 // Added for websockets/socket.io
 // run npm install socket.io
@@ -22,10 +23,12 @@ const port = 5050;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use("/", deck);
 app.use("/game", californiaSpeed);
 app.use(express.json());
+
 
 
 app.use('/api', api);
