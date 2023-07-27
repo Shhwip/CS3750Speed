@@ -8,7 +8,7 @@ import Col from "react-bootstrap/Col";
 const Classic = () => {
   return (
     <>
-    <Container className='container'>
+    <Container className='container-classic'>
     <div className="cards">
         <Row xs={6}>
           <Col>

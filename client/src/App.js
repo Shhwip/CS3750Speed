@@ -4,21 +4,14 @@ import HomePage from "./pages/home";
 import LoginPage from "./pages/login";
 import RegisterForm from "./pages/register";
 import LobbyPage from "./pages/lobby";
-import socket from "./socket";
 import { useState, useEffect } from "react";
-// add for sockets, run npm install socket.io-client
-// import io from "socket.io-client";
 
-// const socket = io.connect("http://localhost:5050");
 import GamePage from "./pages/game";
-import RoutesWithUserChatComponent from "./components/RoutesWithChatComponent";
 import CaliforniaPage from "./pages/california";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Classic from "./pages/classic";
 
-function DisplayData({ record }) {
-  return <h1>Group Name: {record.groupName}</h1>;
-}
+
 
 function App() {
   const [isAuth, setAuthentiation] = useState(false);
@@ -44,8 +37,7 @@ function App() {
     };
     fetchUserAuth();
   }, []);
-  console.log(userSession)
-  console.log(isAuth)
+ 
   return (
     <>
       <Routes>
@@ -55,7 +47,8 @@ function App() {
         <Route element={<ProtectedRoute isAuth={isAuth} isLoading = {isLoading} userName = {userSession.userName} />}>
           <Route path="/game" element={<GamePage />} />
           <Route path="/game/california" element={<CaliforniaPage />} />
-          <Route path="/lobby" element={<LobbyPage socket={socket} />} />
+          <Route path="/lobby" element={<LobbyPage  userName = {userSession.userName}/>} />
+          <Route path="/classic" element={<Classic />}/>
         </Route>
       </Routes>
     </>
