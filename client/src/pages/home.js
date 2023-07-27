@@ -3,29 +3,29 @@ import React from "react";
 const HomePage = () => {
   return <div>
     {/* General navbar for registration/login */}
-    <nav class="navbar navbar-dark bg-dark navbar-expand-lg justify-content-between">
-      <a class="navbar-brand" href="/">Group Out of Town - Speed Home</a>
+    <nav className="navbar navbar-dark bg-dark navbar-expand-lg justify-content-between">
+      <a className="navbar-brand" href="/">Group Out of Town - Speed Home</a>
 
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
+      <div className="collapse navbar-collapse justify-content-end">
+        <ul className="navbar-nav">
+          <li className="nav-item">
+            <a className="nav-link" href="/register">Register</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
+          <li className="nav-item">
+            <a className="nav-link" href="/login">Login</a>
           </li>
           {/* Lobby link won't be here for final product */}
-          <li class="nav-item">
-            <a class="nav-link" href="/lobby">Lobby</a>
+          <li className="nav-item">
+            <a className="nav-link" href="/lobby">Lobby</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/game">Play</a>
+          <li className="nav-item">
+            <a className="nav-link" href="/game">Play</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/classic">Classic</a>
+          <li className="nav-item">
+            <a className="nav-link" href="/classic">Classic</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/game/california">California</a>
+          <li className="nav-item">
+            <a className="nav-link" href="/game/california">California</a>
           </li>
         </ul>
       </div>

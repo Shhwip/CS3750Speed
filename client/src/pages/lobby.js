@@ -1,75 +1,155 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { Col, Container, Form, Row, Card } from "react-bootstrap";
+import gameCardtable from "../png/game_card_table.png";
+import { useNavigate } from "react-router-dom"; // import the hook
 
-function LobbyPage({socket}) {
-    const [currentMessage, setCurrentMessage] = useState(""); 
-    const [messageList, setMessageList] = useState([]);
+function LobbyPage({ userName }) {
+const navigate = useNavigate();
+  const [selectedGame, setSelectedGame] = useState("");
+  const [rooms, setRooms] = useState([]);
+  const [show, setShow] = useState(false);
+  const [insertRoom, setInsertRoom] = useState(false);
 
-    const sendMessage = async () => {
-        if (currentMessage !== "") {
-            const messageData = {
-                message: currentMessage,
-            };
-            await socket.emit("send_message", messageData);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  async function createRoom() {
+    console.log("Selected Game:", selectedGame);
+    const newRoom = { gameType: selectedGame, userName: userName };
+    await fetch("http://localhost:5050/api/room/createRoom", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRoom),
+    });
+    setInsertRoom(!insertRoom);
+    setShow(false);
+  }
+  function JoinRoom(roomId, gameType) {
+    console.log("Room ID:", roomId);
+    console.log("Game Type:", gameType);
+    if(gameType === "California"){
+        navigate("/game/california")
+    }
+    else{
+        navigate("/classic")
+    }
+  }
+
+  useEffect(() => {
+    async function fetchRooms() {
+      try {
+        const response = await fetch(
+          "http://localhost:5050/api/room/getRooms",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+        if (!response.ok) {
+          throw Error("No rooms exist");
         }
+        const data = await response.json();
+        setRooms(data);
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    fetchRooms();
+  }, [insertRoom]);
 
-    function handleClick() {
-        console.log('send message to server');
-        socket.emit('msg', {message: "Pre-set Message"});
-        console.log('message sent');
-    }
-    
-    useEffect(() => {
-        const handleReceiveMessage = (data) => {
-            console.log(data);
-            setMessageList((list) => [...list, data]);
-        };
-    
-        socket.on("receive_message", handleReceiveMessage);
-    
-        // Unsubscribe when component unmounts
-        return () => {
-            socket.off("receive_message", handleReceiveMessage);
-        };
-    
-    }, [socket]);
-    
-
-
-    return (
+  return (
     <div>
-        {/* Added navbar links, Rules page redirect to home page, are we having home page 
-        to show rules? */}
-        <nav class="navbar navbar-dark bg-dark navbar-expand-lg justify-content-between">
-            <a class="navbar-brand" href="/">Group Out of Town - Speed</a>
-
-            <div class="collapse navbar-collapse justify-content-end">
-                <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Rules</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Top Score</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
-                </li>
-                </ul>
-            </div>
-        </nav>
-        <p>This is lobby page, basic chat function</p>
-        <div>
-            {messageList.map((messageContent) => {
-                return <p>{messageContent.message}</p>;
-            })}
+      <nav className="navbar navbar-dark bg-dark navbar-expand-lg justify-content-between">
+        <a className="navbar-brand" href="/">
+          Group Out of Town - Speed
+        </a>
+        <div className="collapse navbar-collapse justify-content-end">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                Rules
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Top Score
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Logout
+              </a>
+            </li>
+          </ul>
         </div>
-        <input type="text" placeholder="Message" onChange={(event) => {
-            setCurrentMessage(event.target.value);
-        }}/>
-        <button onClick={sendMessage}>Send custom message</button>
-        <button onClick={handleClick}>Send pre-set message</button>
-
+      </nav>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create a New Room</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Select
+            aria-label="Default select example"
+            value={selectedGame}
+            onChange={(e) => setSelectedGame(e.target.value)}
+          >
+            <option>Select game</option>
+            <option value="California">California</option>
+            <option value="Classic">Classic</option>
+          </Form.Select>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={createRoom}>
+            Create Room
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Button
+        className="mt-5 mb-5 mx-auto d-block"
+        variant="primary"
+        size="lg"
+        onClick={handleShow}
+      >
+        Create Room
+      </Button>
+      <Container>
+        <Row>
+          {/* The below Col seems empty. Consider populating or removing it. */}
+          <Col>
+            {rooms.map((room, index) => (
+              <Card className={"mb-5"} style={{ width: "18rem" }}>
+                <Card.Img
+                  crossOrigin="anonymous"
+                  variant="top"
+                  src={gameCardtable}
+                />
+                <Card.Body>
+                  <Card.Title>{room.gameType}</Card.Title>
+                  <Card.Text>{"Createed by: " + room.userName}</Card.Text>
+                  <Button
+                    variant="primary"
+                    onClick={() => JoinRoom(room._id, room.gameType)}
+                  >
+                    Join
+                  </Button>{" "}
+                  <Button variant="secondary">Watch</Button>
+                </Card.Body>
+              </Card>
+            ))}
+          </Col>
+        </Row>
+      </Container>
     </div>
-)}
+  );
+}
 
 export default LobbyPage;
