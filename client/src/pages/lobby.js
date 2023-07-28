@@ -6,7 +6,7 @@ import gameCardtable from "../png/game_card_table.png";
 import { useNavigate } from "react-router-dom"; // import the hook
 
 function LobbyPage({ userName }) {
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState("");
   const [rooms, setRooms] = useState([]);
   const [show, setShow] = useState(false);
@@ -16,8 +16,8 @@ const navigate = useNavigate();
   const handleShow = () => setShow(true);
 
   async function createRoom() {
-    console.log("Selected Game:", selectedGame);
-    const newRoom = { gameType: selectedGame, userName: userName };
+    let room = {};
+    const newRoom = { gameType: selectedGame, user1: userName };
     await fetch("http://localhost:5050/api/room/createRoom", {
       method: "POST",
       credentials: "include",
@@ -25,19 +25,49 @@ const navigate = useNavigate();
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newRoom),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Server response: " + response.status);
+        }
+      })
+      .then((data) => {
+        room = data;
+      })
+      .catch(error => {
+        console.error('Error:', error);
     });
     setInsertRoom(!insertRoom);
     setShow(false);
+    navigate(`/waitingroom/${room._id}`, { state: { room } });
   }
-  function JoinRoom(roomId, gameType) {
-    console.log("Room ID:", roomId);
-    console.log("Game Type:", gameType);
-    if(gameType === "California"){
-        navigate("/game/california")
-    }
-    else{
-        navigate("/classic")
-    }
+  async function JoinRoom(roomId) {
+    const newUser = {roomId: roomId, user2: userName}
+    let room = {};
+    await fetch("http://localhost:5050/api/room/updateUser2", {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    }).then((response) =>{
+        if(!response.ok){
+            throw Error("Fail to update room");
+        }
+        else{
+            return response.json();
+        }
+    }).then((data) =>{
+        room = data;
+        console.log("this is room is printed out from Join room", room)
+    }).catch(error =>{
+        console.error(error);
+    })
+    navigate(`/waitingroom/${roomId}`, { state: { room } });
+    setInsertRoom(!insertRoom);
   }
 
   useEffect(() => {
@@ -55,7 +85,6 @@ const navigate = useNavigate();
         }
         const data = await response.json();
         setRooms(data);
-        console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -99,7 +128,7 @@ const navigate = useNavigate();
             value={selectedGame}
             onChange={(e) => setSelectedGame(e.target.value)}
           >
-            <option>Select game</option>
+            
             <option value="California">California</option>
             <option value="Classic">Classic</option>
           </Form.Select>
@@ -134,10 +163,10 @@ const navigate = useNavigate();
                 />
                 <Card.Body>
                   <Card.Title>{room.gameType}</Card.Title>
-                  <Card.Text>{"Createed by: " + room.userName}</Card.Text>
+                  <Card.Text>{"Createed by: " + room.user1}</Card.Text>
                   <Button
                     variant="primary"
-                    onClick={() => JoinRoom(room._id, room.gameType)}
+                    onClick={() => JoinRoom(room._id)}
                   >
                     Join
                   </Button>{" "}
