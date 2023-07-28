@@ -10,6 +10,7 @@ import GamePage from "./pages/game";
 import CaliforniaPage from "./pages/california";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Classic from "./pages/classic";
+import WaitingRoomPage from "./pages/waitingRoom";
 
 
 
@@ -49,6 +50,7 @@ function App() {
           <Route path="/game/california" element={<CaliforniaPage />} />
           <Route path="/lobby" element={<LobbyPage  userName = {userSession.userName}/>} />
           <Route path="/classic" element={<Classic />}/>
+          <Route path="/waitingroom/:id" element={<WaitingRoomPage />}/>
         </Route>
       </Routes>
     </>
