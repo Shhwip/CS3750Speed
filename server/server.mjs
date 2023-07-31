@@ -3,6 +3,7 @@ import cors from "cors";
 import "./config/loadEnvironment.mjs";
 import db from "./config/db.mjs"
 import californiaSpeed from "./routes/games/californiaSpeed.mjs"
+import classicSpeed from "./routes/games/classicSpeed.mjs"
 import api from "./routes/api.mjs"
 import deck from "./routes/deck.mjs"
 import bodyParser from "body-parser";
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use("/", deck);
 app.use("/game", californiaSpeed);
+app.use("/classicSpeed", classicSpeed);
 app.use(express.json());
 
 

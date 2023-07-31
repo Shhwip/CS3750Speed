@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import clubs2 from "../png/2_of_clubs.png";
 import cardBack from "../png/cardBack.png";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";

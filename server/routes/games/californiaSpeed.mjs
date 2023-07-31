@@ -146,8 +146,6 @@ async function startNewGame()
     {   "gameID": (await collection.insertOne(gameState)).insertedId,
         gameState: gameState
     }
-    console.log("startNewGame");
-    console.log(gameState);
     return Promise.resolve(result);
 }
 
@@ -214,8 +212,6 @@ async function playCard(gameID, pile, player)
 async function scoop(gameID)
 {
     let gameState = (await getGameState(gameID)).gameState;
-    console.log("scoop");
-    console.log(gameState);
     let player1deck = gameState.player1deck;
     let player2deck = gameState.player2deck;
 
@@ -235,8 +231,6 @@ async function scoop(gameID)
     shuffle(gameState.player1deck);
     shuffle(gameState.player2deck);
     gameState = await reDeal(gameState.player1deck, gameState.player2deck);
-    console.log("after scoop");
-    console.log(gameState);
     let result = collection.updateOne({_id: new ObjectId(gameID)}, {$set: gameState}); // NO AWAIT HERE BECAUSE WE WANT SPEEEEEEED
     gameState =
     {
@@ -250,9 +244,6 @@ async function scoop(gameID)
 // deal out the 8 piles
 async function reDeal(cardsPlayer1, cardsPlayer2)
 {
-    console.log("reDeal");
-    console.log(cardsPlayer1);
-    console.log(cardsPlayer2);
     let decks = {// odd piles are player1, even piles are player2
         "player1deck": cardsPlayer1.slice(4),
         "player2deck": cardsPlayer2.slice(4),
