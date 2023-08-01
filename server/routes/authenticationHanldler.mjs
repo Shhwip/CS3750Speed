@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
 router.get("/isAuth", async (req, res) => {
   sessionMiddleware(req, res, () => {
     if (req.session.user) {
-      console.log("hello");
+      
       return res.json(req.session.user);
     } else {
       return res.status(401).json("unauthorize");

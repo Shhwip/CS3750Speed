@@ -7,7 +7,7 @@ const UserChatComponent = ({ userName }) => {
   const [currentMessage, setCurrentMessage] = useState("");
 
   useEffect(() => {
-    console.log("useEffect running");
+    
     const handleReceiveMessage = (data) => {
       console.log(data);
       setMessageList((list) => [...list, data]);
