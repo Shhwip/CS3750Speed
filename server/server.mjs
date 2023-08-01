@@ -52,7 +52,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id + "conncted");
+  console.log(socket.id + " conncted");
 
   socket.on("send_message", (data) =>{
     io.emit("receive_message", (data));
@@ -64,8 +64,15 @@ io.on("connection", (socket) => {
     io.emit("receive_message", (data));
   });
 
+  socket.on("join_room", (data) => {
+    console.log(data);
+    //console.log(`${data.numPlayer} has entered room: ${data.roomName}`);
+    
+    socket.join(data._id);
+  })
+
   socket.on("disconnect", () => {
-    console.log(socket.id + "disconnected");
+    console.log(socket.id + " disconnected");
   });
 });
 
