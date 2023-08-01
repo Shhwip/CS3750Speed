@@ -18,6 +18,7 @@ const Classic = () => {
   const [hand13, setHand13] = useState(gameState.hand1.at(-3).reference);
   const [hand14, setHand14] = useState(gameState.hand1.at(-4).reference);
   const [hand15, setHand15] = useState(gameState.hand1.at(-5).reference);
+
   const [hand21, setHand21] = useState(gameState.hand2.at(-1).reference);
   const [hand22, setHand22] = useState(gameState.hand2.at(-2).reference);
   const [hand23, setHand23] = useState(gameState.hand2.at(-3).reference);
@@ -39,27 +40,27 @@ const Classic = () => {
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand11}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand11}.png`)} alt={`${hand11}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand12}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand12}.png`)} alt={`${hand12}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand13}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand13}.png`)} alt={`${hand13}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand14}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand14}.png`)} alt={`${hand14}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand15}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand15}.png`)} alt={`${hand15}`} />
             </div>
           </Col>
         </Row>
@@ -79,7 +80,7 @@ const Classic = () => {
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${playPileRight}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${playPileRight}.png`)} alt={`${playPileRight}`} />
             </div>
           </Col>
           <Col>
@@ -94,27 +95,27 @@ const Classic = () => {
         <Row xs={6} sm={6} md={6} lg={6}>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand21}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand21}.png`)} alt={`${hand21}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand22}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand22}.png`)} alt={`${hand22}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand23}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand23}.png`)} alt={`${hand23}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand24}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand24}.png`)} alt={`${hand24}`} />
             </div>
           </Col>
           <Col>
             <div className="card">
-                <img src={require(`./../png/${hand25}.png`)} alt="black 2_of_clubs" />
+                <img src={require(`./../png/${hand25}.png`)} alt={`${hand25}`} />
             </div>
           </Col>
           <Col>
