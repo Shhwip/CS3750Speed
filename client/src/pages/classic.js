@@ -35,7 +35,7 @@ const Classic = () => {
           <Col>
             <div className="card">
                 <img src={cardBack} alt="back of card" />
-                <div className="textOverlay">10</div>
+                <div className="textOverlay">{gameState.deck1.length}</div>
             </div>
           </Col>
           <Col>
@@ -70,7 +70,7 @@ const Classic = () => {
           <Col>
           <div className="card">
                 <img src={cardBack} alt="back of card" />
-                <div className="textOverlay">10</div>
+                <div className="textOverlay">{gameState.centerDeckLeft.length}</div>
             </div>
           </Col>
           <Col>
@@ -86,7 +86,7 @@ const Classic = () => {
           <Col>
           <div className="card">
                 <img src={cardBack} alt="back of card" />
-                <div className="textOverlay">10</div>
+                <div className="textOverlay">{gameState.centerDeckRight.length}</div>
             </div>
           </Col>
         </Row>
@@ -121,7 +121,7 @@ const Classic = () => {
           <Col>
           <div className="card">
                 <img src={cardBack} alt="back of card" />
-                <div className="textOverlay">10</div>
+                <div className="textOverlay">{gameState.deck2.length}</div>
             </div>
           </Col>
         </Row>
