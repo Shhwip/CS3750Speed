@@ -41,7 +41,7 @@ function LobbyPage({ userName }) {
     });
     setInsertRoom(!insertRoom);
     setShow(false);
-    navigate(`/waitingroom/${room._id}`, { state: { room } });
+    navigate(`/waitingroom/${room._id}`);
   }
   async function JoinRoom(roomId) {
     const newUser = {roomId: roomId, user2: userName}
@@ -66,7 +66,7 @@ function LobbyPage({ userName }) {
     }).catch(error =>{
         console.error(error);
     })
-    navigate(`/waitingroom/${roomId}`, { state: { room } });
+    navigate(`/waitingroom/${roomId}`);
     setInsertRoom(!insertRoom);
   }
 

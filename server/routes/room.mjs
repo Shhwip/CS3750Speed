@@ -16,7 +16,7 @@ router.post("/createRoom", async(req, res) => {
             user1,
             user2
         };
-        console.log(newRoom);
+        //console.log(newRoom);
         res.status(200).send(newRoom);
     } else {
         res.status(500).send({ message: "Failed to insert room." });
@@ -37,6 +37,23 @@ router.get("/getRooms", async (req, res) => {
         res.status(500).send("Error fetching rooms");
     }
 });
+
+router.get("/getRoom/:id", async (req, res) => {
+    const { id } = req.params;
+    let collection = db.collection("Game-Room");
+  
+    try {
+      const room = await collection.findOne({ _id: new ObjectId(id) });
+      if (room) {
+        res.status(200).send(room);
+      } else {
+        res.status(404).send({ message: "Room not found" });
+      }
+  
+    } catch (error) {
+      res.status(500).send({ message: "Fail to fetch room" });
+    }
+  });
 
 router.put("/updateUser2", async(req, res) => {
     const { roomId, user2 } = req.body;

@@ -65,10 +65,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join_room", (data) => {
-    console.log(data);
+    //console.log(data);
     //console.log(`${data.numPlayer} has entered room: ${data.roomName}`);
-    
-    socket.join(data._id);
+    io.to(data.roomId).emit("receive_numPlayerReady", data);
+    io.emit("receive_numPlayerReady", (data))
+    socket.join(data.roomId);
   })
 
   socket.on("disconnect", () => {
