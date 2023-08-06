@@ -2,6 +2,9 @@ import {useState, useEffect, React} from "react";
 import { useParams } from 'react-router-dom';
 import socket from "../socket";
 import Modal from "../components/Modal";
+import Timer from "../components/timer";
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 
 const WaitingRoomPage = () => {
