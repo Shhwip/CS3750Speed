@@ -47,7 +47,7 @@ function App() {
       <Navbar isAuth={isAuth} />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage setAuthentiation={setAuthentiation} />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route element={<ProtectedRoute isAuth={isAuth} isLoading = {isLoading} userName = {userSession.userName} />}>
           <Route path="/game" element={<GamePage />} />
