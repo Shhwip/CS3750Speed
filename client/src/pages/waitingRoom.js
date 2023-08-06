@@ -82,6 +82,9 @@ const WaitingRoomPage = () => {
 
   return (
     <>
+      {startGame 
+        ? <Timer />
+        : null }
       <h1>{"This is waiting room, game type: " + room.gameType}</h1>
       <h2>{room.user1}</h2>
       <h2>{room.user2}</h2>
