@@ -73,6 +73,9 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const collection = await db.collection("userAuthentication");
   const user = await collection.findOne({ email });
+  if(!user){
+    res.status(200).send({ match: false });
+  }
   const userName = user.userName
   if (user.password === password) {
     sessionMiddleware(req, res, () => {

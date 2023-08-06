@@ -9,7 +9,7 @@ import Alert from 'react-bootstrap/Alert';
 
 
 
-export default function LoginPage() {
+export default function LoginPage({setAuthentiation}) {
     const [validated, setValidated] = useState(false);
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
@@ -87,9 +87,10 @@ export default function LoginPage() {
             .then(data => {
                 
                 const { match } = data;
-                //console.log(sha256(password).toString());
+                
                 if(match){
-                    navigate("/lobby")
+                    setAuthentiation(true);
+                    navigate("/lobby");
                 }
                 else{
                     throw new Error();
