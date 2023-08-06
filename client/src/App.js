@@ -5,6 +5,8 @@ import LoginPage from "./pages/login";
 import RegisterForm from "./pages/register";
 import LobbyPage from "./pages/lobby";
 import { useState, useEffect } from "react";
+// import navbar
+import Navbar from "./components/navbar";
 
 import GamePage from "./pages/game";
 import CaliforniaPage from "./pages/california";
@@ -41,6 +43,8 @@ function App() {
  
   return (
     <>
+      {/* Added Navbar to app page */}
+      <Navbar isAuth={isAuth} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage setAuthentiation={setAuthentiation} />} />

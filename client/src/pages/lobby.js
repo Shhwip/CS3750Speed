@@ -94,30 +94,7 @@ function LobbyPage({ userName }) {
 
   return (
     <div>
-      <nav className="navbar navbar-dark bg-dark navbar-expand-lg justify-content-between">
-        <a className="navbar-brand" href="/">
-          Group Out of Town - Speed
-        </a>
-        <div className="collapse navbar-collapse justify-content-end">
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="/">
-                Rules
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Top Score
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+    
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Create a New Room</Modal.Title>

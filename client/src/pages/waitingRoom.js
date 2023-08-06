@@ -1,7 +1,7 @@
 import {useState, useEffect, React} from "react";
 import { useParams } from 'react-router-dom';
 import socket from "../socket";
-
+import Modal from "../components/Modal";
 
 
 const WaitingRoomPage = () => {
@@ -11,6 +11,7 @@ const WaitingRoomPage = () => {
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
   const [startGame, setStartGame] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
     const fetchRoom = async () => {

@@ -126,10 +126,6 @@ export default function RegisterForm() {
   };
   return (
     <div>
-      {/* Added navbar specifici to Registration page, no links other than to home */}
-      <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-        <a class="navbar-brand" href="/">Group Out of Town - Create account</a>
-      </nav>
     
     <Container>
       <Row className="mt-5">
