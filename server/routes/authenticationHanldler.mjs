@@ -87,15 +87,32 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post('/logout', (req, res) => {
+  sessionMiddleware(req, res, () =>{
+    req.session.destroy((err) => {
+      if(err) {
+        
+        return res.status(500).send({msg: 'Error logging out'});
+      }
+      res.clearCookie('connect.sid');
+      res.status(200).send({msg: "Logout success"})
+    })
+  })
+  
+
+})
+
 router.get("/isAuth", async (req, res) => {
   sessionMiddleware(req, res, () => {
     if (req.session.user) {
-      
+      console.log(req.session.user);
       return res.json(req.session.user);
     } else {
       return res.status(401).json("unauthorize");
     }
   });
 });
+
+
 
 export default router;
