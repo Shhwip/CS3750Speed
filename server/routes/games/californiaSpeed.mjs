@@ -117,6 +117,16 @@ californiaSpeed.patch('/california/:gameID/scoop', async (req, res) => {
     res.send(result).status(200);
 });
 
+californiaSpeed.get('/california/:gameID/shuffle', async (req, res) => {
+    if(noValidPlay((await getGameState(req.params.gameID)).gameState))
+    {
+        let result = await scoop(req.params.gameID);
+        res.send(result).status(200);
+    } else {
+        res.send("there is still a valid play").status(200);
+    }
+});
+
 
 // ----------------------------------------------
 // return game state data from the database
@@ -149,7 +159,19 @@ async function startNewGame()
     }
     return Promise.resolve(result);
 }
-
+// ----------------------------------------------
+// check if there are any valid plays
+function noValidPlay(gameState)
+{
+    for(let i = 1; i < 9; i++)
+    {
+        if(validPlay(i, gameState))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 // ----------------------------------------------
 // valid play
 function validPlay(pile, gameState)
