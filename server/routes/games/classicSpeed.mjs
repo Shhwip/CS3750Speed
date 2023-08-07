@@ -20,7 +20,7 @@ classicSpeed.get('/:gameID', async (req, res) => {
 // ----------------------------------------------
 // get game state
 async function gameState(gameID) {
-    let collection = db.collection("classicSpeedGames");
+    let collection = db.collection("Games");
     let query = {_id: new ObjectId(gameID)};
     let gameState = collection.findOne(query);
     return Promise.resolve(gameState);
@@ -44,7 +44,7 @@ export async function newClassicGame() {
         playPileRight: deck.slice(51, 52),
 }
 
-    let collection = db.collection("classicSpeedGames");
+    let collection = db.collection("Games");
     let gameID = await collection.insertOne(gameState);
     let result = {
         gameID: gameID.insertedId,

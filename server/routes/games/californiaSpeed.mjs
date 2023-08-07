@@ -123,7 +123,7 @@ californiaSpeed.patch('/california/:gameID/scoop', async (req, res) => {
 async function getGameState(gameID)
 {
     let query = { _id: new ObjectId(gameID) };
-    let collection = await db.collection("CaliforniaSpeedGames");
+    let collection = await db.collection("Games");
     let gameState = 
     {
         'gameState': await collection.findOne(query)
@@ -142,7 +142,7 @@ async function startNewGame()
     player1deck = await draw(deck, 26);
     player2deck = await draw(deck, 26);
     let gameState = await reDeal(player1deck, player2deck); // deal out the 8 piles
-    let collection = db.collection("CaliforniaSpeedGames");
+    let collection = db.collection("Games");
     let result = 
     {   "gameID": (await collection.insertOne(gameState)).insertedId,
         gameState: gameState
@@ -198,7 +198,7 @@ async function playCard(gameID, pile, player)
     }
 
     gameState["pile" + pile].push(card);
-    let collection = db.collection("CaliforniaSpeedGames");
+    let collection = db.collection("Games");
     let result = collection.updateOne({_id: new ObjectId(gameID)}, {$set: gameState}); // NO AWAIT HERE BECAUSE WE WANT SPEEEEEEED
     gameState =
     {
@@ -228,7 +228,7 @@ async function scoop(gameID)
         }
     }
 
-    let collection = db.collection("CaliforniaSpeedGames");
+    let collection = db.collection("Games");
     shuffle(gameState.player1deck);
     shuffle(gameState.player2deck);
     gameState = await reDeal(gameState.player1deck, gameState.player2deck);
