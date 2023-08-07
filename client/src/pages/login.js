@@ -9,7 +9,7 @@ import Alert from 'react-bootstrap/Alert';
 
 
 
-export default function LoginPage({setAuthentiation}) {
+export default function LoginPage({setAuthentiation, onLoginSuccess}) {
     const [validated, setValidated] = useState(false);
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
@@ -56,12 +56,9 @@ export default function LoginPage({setAuthentiation}) {
             .then(data => {
                 
                 const { salt } = data;
-                console.log(password);
-                console.log(salt);
-                console.log(sha256(password + salt).toString());
+                
             
                 clientHashedPassword = sha256(password + salt).toString();
-                console.log(clientHashedPassword);
             })
             .catch(error => {
                 setShow(true);
@@ -90,6 +87,7 @@ export default function LoginPage({setAuthentiation}) {
                 
                 if(match){
                     setAuthentiation(true);
+                    onLoginSuccess();
                     navigate("/lobby");
                 }
                 else{
@@ -98,7 +96,6 @@ export default function LoginPage({setAuthentiation}) {
             })
             .catch(error => {
                 setShow(true);
-                console.error('Error:', error);
             });
         }
 

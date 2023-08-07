@@ -62,7 +62,6 @@ function LobbyPage({ userName }) {
         }
     }).then((data) =>{
         room = data;
-        console.log("this is room is printed out from Join room", room)
     }).catch(error =>{
         console.error(error);
     })
