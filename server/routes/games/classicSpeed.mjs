@@ -29,7 +29,7 @@ async function gameState(gameID) {
 
 // ----------------------------------------------
 // New Game
-async function newGame() {
+export async function newClassicGame() {
     let deckID = await createDeck();
     console.log(deckID);
     let deck = await draw(deckID, 52);
@@ -48,7 +48,6 @@ async function newGame() {
     let gameID = await collection.insertOne(gameState);
     let result = {
         gameID: gameID.insertedId,
-        gameState: gameState
     }
     return Promise.resolve(result);
 }
