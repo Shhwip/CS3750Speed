@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 const classicSpeed = express.Router();
 
 classicSpeed.get('/new', async (req, res) => {
-    let gameState = await newGame();
+    let gameState = await newClassicGame();
     res.send({gameState}).status(200);
 });
 
