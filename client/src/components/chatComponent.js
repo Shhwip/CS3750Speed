@@ -14,7 +14,6 @@ const UserChatComponent = ({ userName }) => {
     };
 
     socket.on("receive_message", handleReceiveMessage);
-    console.log(userName)
     // Unsubscribe when component unmounts
     return () => {
       socket.off("receive_message", handleReceiveMessage);

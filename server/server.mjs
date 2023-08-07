@@ -64,13 +64,22 @@ io.on("connection", (socket) => {
     io.emit("receive_message", (data));
   });
 
+  
   socket.on("join_room", (data) => {
-    //console.log(data);
-    //console.log(`${data.numPlayer} has entered room: ${data.roomName}`);
-    io.to(data.roomId).emit("receive_numPlayerReady", data);
-    io.emit("receive_numPlayerReady", (data))
+    // First, have the user's socket join the room.
     socket.join(data.roomId);
-  })
+    
+    // Notify other clients in the same room that a user has joined.
+    socket.to(data.roomId).emit("user_joined", {
+      username: data.username, // Assuming you have a username in your data.
+      roomId: data.roomId
+    });
+  
+    // Continue with the rest of your logic for "receive_numPlayerReady".
+    io.to(data.roomId).emit("receive_numPlayerReady", data);
+  });
+  
+
 
   socket.on("make_move", (data) => {
     console.log(data);
