@@ -72,6 +72,11 @@ io.on("connection", (socket) => {
     socket.join(data.roomId);
   })
 
+  socket.on("make_move", (data) => {
+    console.log(data);
+    io.to(data.roomId).emit("receive_move", data);
+  })
+
   socket.on("disconnect", () => {
     console.log(socket.id + " disconnected");
   });

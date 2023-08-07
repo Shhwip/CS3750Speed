@@ -9,7 +9,7 @@ classicSpeed.post('/new', async (req, res) => {
     let userName = req.body.userName;
     let gameID = req.body.gameID;
     let gameState = await newGame();
-
+    let nullHand = ["cardBack", "cardBack", "cardBack", "cardBack", "cardBack"];
     let player = async (userName, gameID) => {
         let collection = db.collection("Game-Room");
         let query = {_id: new ObjectId(gameID)};
@@ -27,12 +27,12 @@ classicSpeed.post('/new', async (req, res) => {
     player = await player(userName, gameID);
     console.log(player);
     if(player === "player1") {
-        gameState.gameState.hand2 = [];
+        gameState.gameState.hand2 = nullHand;
         console.log(gameState.hand2);
-        gameState.gameState.deck2 = [];
+        gameState.gameState.deck2 = nullHand;
     } else if(player === "player2") {
-        gameState.gameState.hand1 = [];
-        gameState.gameState.deck1 = [];
+        gameState.gameState.hand1 = nullHand;
+        gameState.gameState.deck1 = nullHand;
     }
     console.log(gameState);
     res.send({gameState}).status(200);

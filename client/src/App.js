@@ -54,7 +54,7 @@ function App() {
           <Route path="/game/california" element={<CaliforniaPage />} />
           <Route path="/lobby" element={<LobbyPage  userName = {userSession.userName}/>} />
           <Route path="/classic" element={<Classic />}/>
-          <Route path="/waitingroom/:id" element={<WaitingRoomPage />}/>
+          <Route path="/waitingroom/:id" element={<WaitingRoomPage userName = {userSession.userName}/>}/>
         </Route>
       </Routes>
     </>

@@ -1,5 +1,6 @@
 import {useState, useEffect, React} from "react";
 import { useParams } from 'react-router-dom';
+import Classic from "./classic";
 import socket from "../socket";
 import Modal from "../components/Modal";
 import Timer from "../components/timer";
@@ -7,7 +8,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
 
-const WaitingRoomPage = () => {
+const WaitingRoomPage = ({userName}) => {
  
   //const room = location.state.room
   const {id} = useParams()
@@ -17,6 +18,7 @@ const WaitingRoomPage = () => {
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
+
     const fetchRoom = async () => {
       try {
         const response = await fetch(
@@ -85,6 +87,7 @@ const WaitingRoomPage = () => {
       {startGame 
         ? <Timer />
         : null }
+        {startGame ? <Classic roomID={room._id} userName={userName} /> : null}
       <h1>{"This is waiting room, game type: " + room.gameType}</h1>
       <h2>{room.user1}</h2>
       <h2>{room.user2}</h2>
