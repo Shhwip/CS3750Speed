@@ -51,7 +51,6 @@ const WaitingRoomPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect from numPlayerReady");
 
     const handleReceiveMessage = (data) => {
       setPlayerReady(data.numPlayerReady);

@@ -70,13 +70,20 @@ io.on("connection", (socket) => {
     
     // Notify other clients in the same room that a user has joined.
     socket.to(data.roomId).emit("user_joined", {
-      username: data.username, // Assuming you have a username in your data.
+      username: data.username, 
       roomId: data.roomId
     });
   
-    // Continue with the rest of your logic for "receive_numPlayerReady".
     io.to(data.roomId).emit("receive_numPlayerReady", data);
+    
   });
+  socket.on("classic_play", (data) => {
+    console.log("data from classic play")
+    console.log(data)
+    io.to(data.id).emit("classic_play", data);
+  })
+
+ 
   
   // added leave room socket
   socket.on("leave_room", (data)=>{
