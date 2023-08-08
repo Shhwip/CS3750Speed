@@ -78,4 +78,22 @@ router.put("/updateUser2", async(req, res) => {
         res.status(500).send({ message: "Internal server error" });
     }
 });
+
+router.delete("/deleteRoom/:id", async (req, res) => {
+    const { id } = req.params;
+    let collection = db.collection("Game-Room");
+  
+    try {
+      const room = await collection.findOneAndDelete({ _id: new ObjectId(id) });
+      if (room) {
+        res.status(200).send(room);
+      } else {
+        res.status(404).send({ message: "Room not found" });
+      }
+  
+    } catch (error) {
+      res.status(500).send({ message: "Fail to fetch room" });
+    }
+  });
+
 export default router;

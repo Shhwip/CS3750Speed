@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import socket from "../socket";
 import Timer from "../components/timer";
+import { useNavigate } from "react-router-dom";
+
 
 const WaitingRoomPage = () => {
   const { id } = useParams();
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
   const [startGame, setStartGame] = useState(false);
+  const navigate = useNavigate();
 
   const fetchRoom = async () => {
     try {
@@ -65,13 +68,38 @@ const WaitingRoomPage = () => {
     socket.emit("join_room", { roomId: room._id, numPlayerReady: updatedNumPlayerReady });
   };
 
+  const leaveRoomClick = async() => {
+      const roomId = {id: id }
+      console.log(roomId);
+    try {
+        const response = await fetch(`http://localhost:5050/api/room/deleteRoom/${id}`, { 
+          method: "DELETE",
+          body: JSON.stringify({_id: roomId})
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch room");
+        }
+        else {
+          navigate("/lobby")
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+  }
+
   return (
     <>
       {startGame ? <Timer /> : null}
       <h1>{"This is waiting room, game type: " + room.gameType}</h1>
       <h2>{room.user1}</h2>
       <h2>{room.user2}</h2>
-      <button onClick={handleReadyPlayer}>Ready</button>
+      <button onClick={handleReadyPlayer}>Ready</button> 
+      <div>
+        <button onClick={leaveRoomClick}>Leave Room</button>
+      </div>
+      
     </>
   );
 };
