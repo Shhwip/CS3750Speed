@@ -44,6 +44,9 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
 
 const Classic = ({ numPlayer, room }) => {
   const [cards, setCards] = useState([]);
+  const [cardIndex, setCardIndex] = useState(5);
+  const [leftPileIndex, setLeftPileIndex] = useState(1);
+  const [rightPileIndex, setRightPileIndex] = useState(1);
   const [leftPile, setLeftPile] = useState(room.leftPile);
   const [rightPile, setRightPile] = useState(room.rightPile);
   const [leftCard, setLeftCard] = useState(room.leftPile[0].reference);
@@ -64,11 +67,6 @@ const Classic = ({ numPlayer, room }) => {
     setFourthCard(selectedCards[3].reference);
     setFifthCard(selectedCards[4].reference);
   }, []);
-
-  const handleLeftCardDrop = (droppedCardRef) => {
-    // Logic for when a card is dropped on the left card
-    setLeftCard(droppedCardRef);
-  };
 
   const getCardRank = (cardRef) => {
     // Assuming cardRef format is like "2_of_hearts.png"
@@ -96,15 +94,72 @@ const Classic = ({ numPlayer, room }) => {
     return difference === 1; // Return true if ranks differ by 1, else false
   };
 
+
+  const removeDroppedCard = (droppedCardRef) => {
+    if (droppedCardRef == card1) {
+      setFirstCard("");
+    } else if (droppedCardRef == card2) {
+      setSecondCard("");
+    } else if (droppedCardRef == card3) {
+      setThirdCard("");
+    } else if (droppedCardRef == card4) {
+      setFourthCard("");
+    } else if (droppedCardRef == card5) {
+      setFifthCard("");
+    }
+  };
+
+  const handleLeftCardDrop = (droppedCardRef) => {
+    // Logic for when a card is dropped on the left card
+    removeDroppedCard(droppedCardRef);
+    setLeftCard(droppedCardRef);
+  };
+
   const handleRightCardDrop = (droppedCardRef) => {
     // Logic for when a card is dropped on the right card
+    removeDroppedCard(droppedCardRef);
     setRightCard(droppedCardRef);
+  };
+
+  const handleCardClick = () => {
+    let tempCardIndex = cardIndex
+    if(tempCardIndex === 25){
+      return;
+    }
+    // Place your logic here
+    if(card1 === ""){
+      console.log("card 1 empty")
+      setFirstCard(cards[tempCardIndex].reference);
+      tempCardIndex++;
+    }
+    if(card2 === ""){
+      console.log("card 2 empty")
+      setSecondCard(cards[tempCardIndex].reference);
+      tempCardIndex++
+    }
+    if(card3 === ""){
+      console.log("card 3 empty")
+      setThirdCard(cards[tempCardIndex].reference);
+      tempCardIndex++
+    }
+    if(card4 === ""){
+      console.log("card 4 empty")
+      setFourthCard(cards[tempCardIndex].reference);
+      tempCardIndex++
+    }
+    if(card5 === ""){
+      console.log("card 5 empty")
+      setFifthCard(cards[tempCardIndex].reference);
+      tempCardIndex++
+    }
+    setCardIndex(tempCardIndex);
+    
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <Container className="container-classic">
-      <div className="cards">
+        <div className="cards">
           <Row xs={6} sm={6} md={6} lg={6}>
             <Col>
               <div className="card">
@@ -188,9 +243,9 @@ const Classic = ({ numPlayer, room }) => {
               <DraggableCard cardRef={card5} />
             </Col>
             <Col>
-              <div className="card">
+              <div className="card" onClick={handleCardClick}>
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                <div className="textOverlay">{cards.length}</div>
+                <div className="textOverlay">{cards.length - cardIndex + 5}</div>
               </div>
             </Col>
           </Row>
