@@ -1,6 +1,8 @@
 import express from "express";
 import db from "../config/db.mjs";
 import { ObjectId } from "mongodb";
+import newClassicGame from "./games/classicSpeed.mjs";
+import californiaSpeed from "./games/californiaSpeed.mjs";
 const router = express.Router();
 
 router.post("/createRoom", async(req, res) => {
@@ -8,10 +10,17 @@ router.post("/createRoom", async(req, res) => {
     const user2 = "";
     let collection = db.collection("Game-Room");
     let result = await collection.insertOne({gameType, user1, user2});
-
+    if (gameType === "Classic") {
+        game = await newClassicGame();
+    } else if (gameType === "California") {
+        res.status(500).send({ message: "California Speed not implemented yet." });
+    } else {
+        res.status(500).send({ message: "Invalid game type." });
+    }
     if (result && result.insertedId) {
         const newRoom = {
             _id: result.insertedId,
+            gameID: game.gameID,
             gameType,
             user1,
             user2
