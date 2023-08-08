@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 const classicSpeed = express.Router();
 
 classicSpeed.get('/new', async (req, res) => {
-    let gameState = await newClassicGame();
+    let gameState = await newGame();
     res.send({gameState}).status(200);
 });
 
@@ -20,7 +20,7 @@ classicSpeed.get('/:gameID', async (req, res) => {
 // ----------------------------------------------
 // get game state
 async function gameState(gameID) {
-    let collection = db.collection("Games");
+    let collection = db.collection("classicSpeedGames");
     let query = {_id: new ObjectId(gameID)};
     let gameState = collection.findOne(query);
     return Promise.resolve(gameState);
@@ -29,7 +29,7 @@ async function gameState(gameID) {
 
 // ----------------------------------------------
 // New Game
-export async function newClassicGame() {
+async function newGame() {
     let deckID = await createDeck();
     console.log(deckID);
     let deck = await draw(deckID, 52);
@@ -44,10 +44,11 @@ export async function newClassicGame() {
         playPileRight: deck.slice(51, 52),
 }
 
-    let collection = db.collection("Games");
+    let collection = db.collection("classicSpeedGames");
     let gameID = await collection.insertOne(gameState);
     let result = {
         gameID: gameID.insertedId,
+        gameState: gameState
     }
     return Promise.resolve(result);
 }
