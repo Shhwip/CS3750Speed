@@ -105,7 +105,7 @@ const WaitingRoomPage = () => {
   return (
     <>
       {showClassic ? (
-        <Classic numPlayer= {numPlayer} />
+        <Classic numPlayer= {numPlayer} room = {room} />
       ) : (
         <>
           {startGame ? <Timer /> : null}
