@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from "cors";
 import "./config/loadEnvironment.mjs";
-import db from "./config/db.mjs"
 import californiaSpeed from "./routes/games/californiaSpeed.mjs"
 import classicSpeed from "./routes/games/classicSpeed.mjs"
 import api from "./routes/api.mjs"
