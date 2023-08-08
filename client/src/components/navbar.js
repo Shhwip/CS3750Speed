@@ -4,20 +4,12 @@ import { NavLink } from "react-router-dom";
 
 export default function Navbar({isAuth}) {
 
-    const getURL = () => {
-        return window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/') + 1)
-    }
+    // const getURL = () => {
+    //     return window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/') + 1)
+    // }
 
     function NavList(){
-        if (isAuth && (getURL() === "/waitingroom/") ){
-            return (
-                <div>
-                    <NavLink className="game px-5" to="/lobby">Exit Game</NavLink>
-                    {console.log(getURL())}
-                </div>
-            )
-        }
-        else if (isAuth){
+        if (isAuth){
             return (
                 <div>
                     <NavLink className="home px-5" to="/">Rules</NavLink>

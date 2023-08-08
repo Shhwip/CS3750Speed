@@ -78,7 +78,12 @@ io.on("connection", (socket) => {
     io.to(data.roomId).emit("receive_numPlayerReady", data);
   });
   
-
+  // added leave room socket
+  socket.on("leave_room", (data)=>{
+    console.log("leaving room: " + data.id);
+    io.to(data.id).emit("leave_room");
+  }
+  )
 
   socket.on("disconnect", () => {
     console.log(socket.id + " disconnected");

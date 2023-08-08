@@ -94,14 +94,27 @@ const WaitingRoomPage = () => {
           throw new Error(data.message || "Failed to fetch room");
         }
         else {
-          navigate("/lobby")
+          // altered from navigate to socket.emit
+          socket.emit("leave_room", roomId);
+          
         }
       } catch (error) {
         console.error(error);
       }
 
   }
+  
+  useEffect(()=>{
+    const leaveRoom = () => {
+      navigate("/lobby");
+    }
+    socket.on("leave_room", leaveRoom);
 
+    return () => {
+      socket.off("leave_room", leaveRoom);
+    }
+  })  
+  
   return (
     <>
       {showClassic ? (
