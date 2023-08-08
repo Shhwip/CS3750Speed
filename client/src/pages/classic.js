@@ -10,7 +10,6 @@ const response = await request(url + "new");
 const gameID = response.body.gameID;
 
 const Classic = () => {
-  console.log(response);
   const [gameState, setGameState] = useState(response.body.gameState.gameState);
   console.log(gameState);
   const [hand11, setHand11] = useState(gameState.hand1.at(-1).reference);

@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import socket from "../socket";
 import Timer from "../components/timer";
+import Classic from "./classic";
 import { useNavigate } from "react-router-dom";
 
-
 const WaitingRoomPage = () => {
+  const location = useLocation();
+  const numPlayer = location.state.numPlayer;
+  
   const { id } = useParams();
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
@@ -31,6 +34,7 @@ const WaitingRoomPage = () => {
   };
 
   useEffect(() => {
+    joinRoom();
     fetchRoom();
 
     const handleUserJoined = () => {
@@ -46,7 +50,7 @@ const WaitingRoomPage = () => {
   }, []);
 
   useEffect(() => {
-    joinRoom();
+    console.log("useEffect from numPlayerReady");
 
     const handleReceiveMessage = (data) => {
       setPlayerReady(data.numPlayerReady);
@@ -61,6 +65,14 @@ const WaitingRoomPage = () => {
       socket.off("receive_numPlayerReady", handleReceiveMessage);
     };
   }, [numPlayerReady]);
+
+  useEffect(() => {
+    if (startGame) {
+      setTimeout(() => {
+        setShowClassic(true);
+      }, 3000); // 3 seconds
+    }
+  }, [startGame]);
 
   const handleReadyPlayer = async () => {
     const updatedNumPlayerReady = numPlayerReady + 1;

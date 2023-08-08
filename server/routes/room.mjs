@@ -6,8 +6,10 @@ import californiaSpeed from "./games/californiaSpeed.mjs";
 const router = express.Router();
 
 router.post("/createRoom", async(req, res) => {
-    const {gameType, user1} = req.body;
+    let {gameType, user1} = req.body;
     const user2 = "";
+   
+    
     let collection = db.collection("Game-Room");
     let result = await collection.insertOne({gameType, user1, user2});
     if (gameType === "Classic") {
