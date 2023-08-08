@@ -9,9 +9,9 @@ const HomePage = () => {
   function ShowRules() {
     if (classicSpeed){
       return (
-        <div>
-          <h4>Classic Speed Gameplay and Rules</h4>
-          <ul>
+        <div className="rules">
+          <h4 className="title-rules">Classic Speed Gameplay and Rules</h4>
+          <ul className="list-rules">
             <li>The goal of the game is to get rid of all your cards.</li>
             <li>Each player keeps 5 cards in their hands, drawing from their respective draw piles to maintain 5 cards.</li>
             <li>The center of the game contains 4 piles, 2 discard piles in the center (face up), 
@@ -31,9 +31,9 @@ const HomePage = () => {
     }
     else {
       return (
-        <div>
-          <h4>California Speed Gameplay and Rules</h4>
-          <ul>
+        <div className="rules">
+          <h4 className="title-rules">California Speed Gameplay and Rules</h4>
+          <ul className="list-rules">
             <li>The goal of the game is to get rid of all your cards.</li>
             <li>After the deck is shuffled, it is dealt evenly between 2 players.</li>
             <li>Each player places 4 cards in front of them, resulting in 8 total discard piles.</li>
@@ -44,7 +44,7 @@ const HomePage = () => {
               and placed on the bottom of the player's pile. 4 new discard piles are created for each player and play resumes.</li>
           </ul>
           <h5>Tips:</h5>
-          <ul>
+          <ul className="list-rules">
             <li>If there are three cards that match, you (and your opponent) may cover all three.</li>
             <li>If you cover a card with another card that matches it (say, you are covering a 2 and you play another 2 on top of it),
                you can consider that a match and cover it again with a new card.</li>
@@ -66,8 +66,8 @@ const HomePage = () => {
         <button className="btn btn-success" type="button" onClick={()=> setClassicSpeed(false)}>California</button>
       </div>
     </div>
-    <div className="col-md-6 mx-auto border">
-      <ShowRules />
+    <div className="rules col-md-6 mx-auto border">
+      < ShowRules />
     </div>
 
     </>;

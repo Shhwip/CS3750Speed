@@ -12,6 +12,10 @@ code{
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/*
+  Classic and California game styles
+*/
 .textOverlay{
   position: absolute; 
   top: 50%;
@@ -20,7 +24,6 @@ code{
   color: red;
   font-size: 80px;  
 }
-
 
 .container-classic{
   background: green;
@@ -48,5 +51,27 @@ code{
   transform: translatex(var(--distance));
 }
 
+/*
+Classic and California game styles END
+*/
 
+/*
+Home rules styling 
+*/
 
+.rules{
+  padding: 10px;
+  
+}
+.title-rules{
+  text-align: center;
+  padding-bottom: 20px;
+}
+.list-rules{
+  list-style-type: circle;
+
+}
+
+/*
+Home rules styling END
+*/
