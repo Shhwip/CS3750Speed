@@ -17,7 +17,7 @@ function LobbyPage({ userName }) {
 
   async function createRoom() {
     let room = {};
-    const newRoom = { gameType: selectedGame, user1: userName };
+    const newRoom = { gameType: selectedGame, user1: userName + "1"};
     await fetch("http://localhost:5050/api/room/createRoom", {
       method: "POST",
       credentials: "include",
@@ -41,10 +41,12 @@ function LobbyPage({ userName }) {
     });
     setInsertRoom(!insertRoom);
     setShow(false);
-    navigate(`/waitingroom/${room._id}`);
+    navigate(`/waitingroom/${room._id}`, { state: { numPlayer: 1 } });
+
   }
+
   async function JoinRoom(roomId) {
-    const newUser = {roomId: roomId, user2: userName}
+    const newUser = {roomId: roomId, user2: userName+"2", numPlayer: 2}
     let room = {};
     await fetch("http://localhost:5050/api/room/updateUser2", {
       method: "PUT",
@@ -65,7 +67,8 @@ function LobbyPage({ userName }) {
     }).catch(error =>{
         console.error(error);
     })
-    navigate(`/waitingroom/${roomId}`);
+    navigate(`/waitingroom/${roomId}`, { state: { numPlayer: 2} });
+
     setInsertRoom(!insertRoom);
   }
 
@@ -139,7 +142,7 @@ function LobbyPage({ userName }) {
                 />
                 <Card.Body>
                   <Card.Title>{room.gameType}</Card.Title>
-                  <Card.Text>{"Createed by: " + room.user1}</Card.Text>
+                  <Card.Text>{"Createed by: " +  room.user1.slice(0, -1)}</Card.Text>
                   <Button
                     variant="primary"
                     onClick={() => JoinRoom(room._id)}
