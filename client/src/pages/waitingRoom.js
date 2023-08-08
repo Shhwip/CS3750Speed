@@ -13,6 +13,7 @@ const WaitingRoomPage = () => {
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
   const [startGame, setStartGame] = useState(false);
+  const [showClassic, setShowClassic] = useState(false);
   const navigate = useNavigate();
 
   const fetchRoom = async () => {
@@ -103,15 +104,20 @@ const WaitingRoomPage = () => {
 
   return (
     <>
-      {startGame ? <Timer /> : null}
-      <h1>{"This is waiting room, game type: " + room.gameType}</h1>
-      <h2>{room.user1}</h2>
-      <h2>{room.user2}</h2>
-      <button onClick={handleReadyPlayer}>Ready</button> 
-      <div>
+      {showClassic ? (
+        <Classic numPlayer= {numPlayer} />
+      ) : (
+        <>
+          {startGame ? <Timer /> : null}
+          <h1>{"This is waiting room, game type: " + room.gameType}</h1>
+          <h2>{room.user1}</h2>
+          <h2>{room.user2}</h2>
+          <button onClick={handleReadyPlayer}>Ready</button>
+		  <div>
         <button onClick={leaveRoomClick}>Leave Room</button>
       </div>
-      
+        </>
+      )}
     </>
   );
 };

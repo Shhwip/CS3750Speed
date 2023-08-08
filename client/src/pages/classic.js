@@ -9,7 +9,7 @@ const url = "http://localhost:5050/classicSpeed/";
 const response = await request(url + "new");
 const gameID = response.body.gameID;
 
-const Classic = () => {
+const Classic = ({numPlayer}) => {
   const [gameState, setGameState] = useState(response.body.gameState.gameState);
   console.log(gameState);
   const [hand11, setHand11] = useState(gameState.hand1.at(-1).reference);
