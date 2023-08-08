@@ -9,14 +9,35 @@ router.post("/createRoom", async(req, res) => {
    
     
     let collection = db.collection("Game-Room");
-    let result = await collection.insertOne({gameType, user1, user2});
 
+    
+    let cardCollection = db.collection("cardCollection");
+    let cards = await cardCollection.find({}).toArray();
+    for (let i = cards.length - 1; i > 0; i--) {
+        // Generate a random index between 0 and i (inclusive)
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Swap elements array[i] and array[j]
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    if(gameType == "Classic"){
+
+    }
+    let user1Cards = cards.slice(0, 20);
+    let user2Cards = cards.slice(20, 40);
+    let leftPile = cards.slice(40, 46);
+    let rightPile = cards.slice(46, 52);
+    let result = await collection.insertOne({gameType, user1, user2, user1Cards, user2Cards, leftPile, rightPile});
     if (result && result.insertedId) {
         const newRoom = {
             _id: result.insertedId,
             gameType,
             user1,
-            user2
+            user2,
+            user1Cards,
+            user2Cards, 
+            leftPile,
+            rightPile
         };
         //console.log(newRoom);
         res.status(200).send(newRoom);

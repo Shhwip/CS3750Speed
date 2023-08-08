@@ -1,6 +1,10 @@
-import db from "../config/db.mjs";
+import "../config/loadEnvironment.mjs";
+import db from "../config/db.mjs"
+
+
 
 const insertCardReference = async () => {
+  
   try {
     const cardCollection = db.collection("cardCollection");
 
