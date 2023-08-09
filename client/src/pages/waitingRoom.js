@@ -4,7 +4,6 @@ import socket from "../socket";
 import Timer from "../components/timer";
 import Classic from "./classic";
 import { useNavigate } from "react-router-dom";
-
 const WaitingRoomPage = () => {
   const location = useLocation();
   const numPlayer = location.state.numPlayer;
