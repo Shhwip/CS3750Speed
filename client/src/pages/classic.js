@@ -224,7 +224,7 @@ const Classic = ({ numPlayer, room }) => {
 
     setLeftCard(droppedCardRef);
     const currentHandCard = removeDroppedCard(droppedCardRef);
-    checkWinner(currentHandCard);
+    
     const emitEvent = () => {
       socket.emit("classic_play", {
         id: room._id,
@@ -232,7 +232,7 @@ const Classic = ({ numPlayer, room }) => {
         rightCard: rightCard,
         pileIndex: pileIndex,
         opponentCard: currentHandCard,
-        gameOver: checkWinner(),
+        gameOver: checkWinner(currentHandCard),
       });
     };
 
@@ -244,7 +244,6 @@ const Classic = ({ numPlayer, room }) => {
     setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
     setRightCard(droppedCardRef);
     const currentHandCard = removeDroppedCard(droppedCardRef);
-    checkWinner(currentHandCard);
     const emitEvent = () => {
       socket.emit("classic_play", {
         id: room._id,
@@ -252,7 +251,7 @@ const Classic = ({ numPlayer, room }) => {
         rightCard: droppedCardRef,
         pileIndex: pileIndex,
         opponentCard: currentHandCard,
-        gameOver: checkWinner(),
+        gameOver: checkWinner(currentHandCard),
       });
     };
 
