@@ -8,8 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import socket from "../socket";
 import GameResult from "../components/GameResult";
 
-
-
+//Note: what I still miss and test: reshuffle when the pile out of card, allow to click the pile when the cardIndex is 20 even there is empty card.
 
 //function help drag the card
 const DraggableCard = ({ cardRef, onDrop }) => {
@@ -23,7 +22,7 @@ const DraggableCard = ({ cardRef, onDrop }) => {
 
   return (
     <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1 }} className="card">
-      {cardRef ? (
+      {cardRef && cardRef !== "" && cardRef !== "no-card" ? (
         <img src={require(`./../png/${cardRef}`)} alt={cardRef} />
       ) : null}
     </div>
@@ -49,10 +48,9 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
   );
 };
 
-
 const Classic = ({ numPlayer, room }) => {
   const [cards, setCards] = useState([]);
-  const [opponentCard, setOponentCard] = useState([]); 
+  const [opponentCard, setOponentCard] = useState([]);
   const [cardIndex, setCardIndex] = useState(5);
   const [pileIndex, setPileIndex] = useState(1);
   const [leftPile, setLeftPile] = useState(room.leftPile);
@@ -66,6 +64,7 @@ const Classic = ({ numPlayer, room }) => {
   const [card5, setFifthCard] = useState("");
   const [isGameOver, setGameOver] = useState(false);
   const [isWinner, setWinner] = useState(false);
+  const [usedCard, setUsedCard] = useState([]);
 
   //set all card ready
   useEffect(() => {
@@ -76,36 +75,66 @@ const Classic = ({ numPlayer, room }) => {
     setThirdCard(selectedCards[2].reference);
     setFourthCard(selectedCards[3].reference);
     setFifthCard(selectedCards[4].reference);
+    setUsedCard([
+      ...room.leftPile.map((item) => item.reference),
+      ...room.rightPile.map((item) => item.reference),
+    ]);
+    console.log("Used card: ");
+    console.log(usedCard);
     const emitEvent = () => {
-      let opponentCards = [selectedCards[0].reference, selectedCards[1].reference, selectedCards[2].reference, selectedCards[3].reference, selectedCards[4].reference];
-      socket.emit("classic_play", { id: room._id, leftCard, rightCard, pileIndex: pileIndex, opponentCard: opponentCards, gameOver: isGameOver });
+      let opponentCards = [
+        selectedCards[0].reference,
+        selectedCards[1].reference,
+        selectedCards[2].reference,
+        selectedCards[3].reference,
+        selectedCards[4].reference,
+      ];
+      socket.emit("classic_play", {
+        id: room._id,
+        leftCard,
+        rightCard,
+        pileIndex: pileIndex,
+        opponentCard: opponentCards,
+        gameOver: isGameOver,
+      });
     };
 
     emitEvent();
-
   }, []);
 
   //compare player vs current opponent array
   const checkOpponentArray = (arr1, arr2) => {
     if (arr1.length !== arr2.length) return false;
     for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] === arr2[i]) return true;
+      if (arr1[i] === arr2[i] && arr1[i] != "no-card") return true;
     }
     return false;
   };
+
   //----------------receive data from websocket--------------
   useEffect(() => {
     const moveHandler = (data) => {
       if (data.leftCard && data.rightCard) {
         setLeftCard(data.leftCard);
         setRightCard(data.rightCard);
-        
+
         // Check if the arrays are not equal and then set opponent cards
-        if (!checkOpponentArray(data.opponentCard, [card1, card2, card3, card4, card5])) {
-          console.log("opponent card is set")
+        if (
+          !checkOpponentArray(data.opponentCard, [
+            card1,
+            card2,
+            card3,
+            card4,
+            card5,
+          ])
+        ) {
           setOponentCard(data.opponentCard);
         }
-        
+        if (data.leftPile && data.leftPile.length !== 0) {
+          setLeftPile(data.leftPile);
+          setRightPile(data.rightPile);
+        }
+
         setPileIndex(data.pileIndex);
         setGameOver(data.gameOver);
       }
@@ -116,10 +145,11 @@ const Classic = ({ numPlayer, room }) => {
       socket.off("classic_play", moveHandler);
     };
   }, [socket, leftCard, rightCard]);
-//-----------------------------------------------
+  //-----------------------------------------------
 
-//functions assist to check if a card is valid to drop ------------------------------
+  //functions assist to check if a card is valid to drop ------------------------------
   const getCardRank = (cardRef) => {
+    if (cardRef === "no-card") return -1;
     const rank = cardRef.split("_")[0];
     switch (rank) {
       case "king":
@@ -135,64 +165,75 @@ const Classic = ({ numPlayer, room }) => {
     }
   };
 
-
   const isValidDrop = (droppedCardRef, currentCardRef) => {
     const droppedRank = getCardRank(droppedCardRef);
+    if (droppedRank === -1) return false;
     const currentRank = getCardRank(currentCardRef);
 
     const difference = Math.abs(droppedRank - currentRank);
-
     return difference === 1; // Return true if ranks differ by 1, else false
   };
 
   const removeDroppedCard = (droppedCardRef) => {
-    let cardList = [card1, card2, card3, card4, card5]
-    if (droppedCardRef === card1) {
-      setFirstCard("");
-      cardList[0] = "";
-    } else if (droppedCardRef === card2) {
-      setSecondCard("");
-      cardList[1] = "";
-    } else if (droppedCardRef === card3) {
-      setThirdCard("");
-      cardList[2] = "";
-    } else if (droppedCardRef === card4) {
-      setFourthCard("");
-      cardList[3] = "";
-    } else if (droppedCardRef === card5) {
-      setFifthCard("");
-      cardList[4] = "";
-    }
-    return cardList
+    let cardList = [card1, card2, card3, card4, card5];
+    const cardSetters = [
+      setFirstCard,
+      setSecondCard,
+      setThirdCard,
+      setFourthCard,
+      setFifthCard,
+    ];
+    cardList.forEach((card, index) => {
+      if (droppedCardRef === card) {
+        if (cardIndex === 20) {
+          cardSetters[index]("no-card");
+          cardList[index] = "no-card";
+        } else {
+          cardSetters[index]("");
+          cardList[index] = "";
+        }
+      }
+    });
+    return cardList;
   };
-//----------------------------------------------------------------
+  //----------------------------------------------------------------
 
-//-------------------------check game over---------------------------------------
-const checkWinner = () => {
-  let cardList = [card1, card2, card3, card4, card5];
-  console.log("check winner cardList: ")
-  console.log(cardList)
-  // Check if all cards are empty and cardIndex is 20
-  if(cardList.every((card) => card === "") && cardIndex === 20) {
+  //-------------------------check game over---------------------------------------
+  const checkWinner = (currentHandCard) => {
+    console.log("check winner cardList: ");
+    console.log(currentHandCard);
+    // Check if all cards are empty and cardIndex is 20
+    if (
+      currentHandCard.every((card) => card === "" || card === "no-card") &&
+      cardIndex === 20
+    ) {
       setWinner(true);
       setGameOver(true);
       return true;
-  }
-  
-  return false;
-}
+    }
+
+    return false;
+  };
 
   //-----------------------------------------------------------------
 
   //--------------------function for left and right card drop ------------------------------------
   const handleLeftCardDrop = (droppedCardRef) => {
     // Logic for when a card is dropped on the left card
-    
-    setLeftCard(droppedCardRef);
-    
+    setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
 
+    setLeftCard(droppedCardRef);
+    const currentHandCard = removeDroppedCard(droppedCardRef);
+    checkWinner(currentHandCard);
     const emitEvent = () => {
-      socket.emit("classic_play", { id: room._id, leftCard: droppedCardRef, rightCard: rightCard, pileIndex: pileIndex, opponentCard: removeDroppedCard(droppedCardRef), gameOver: checkWinner() });
+      socket.emit("classic_play", {
+        id: room._id,
+        leftCard: droppedCardRef,
+        rightCard: rightCard,
+        pileIndex: pileIndex,
+        opponentCard: currentHandCard,
+        gameOver: checkWinner(),
+      });
     };
 
     emitEvent();
@@ -200,10 +241,19 @@ const checkWinner = () => {
 
   const handleRightCardDrop = (droppedCardRef) => {
     // Logic for when a card is dropped on the right card
+    setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
     setRightCard(droppedCardRef);
-    checkWinner()
+    const currentHandCard = removeDroppedCard(droppedCardRef);
+    checkWinner(currentHandCard);
     const emitEvent = () => {
-      socket.emit("classic_play", { id: room._id, leftCard: leftCard, rightCard: droppedCardRef, pileIndex: pileIndex, opponentCard: removeDroppedCard(droppedCardRef), gameOver: checkWinner() });
+      socket.emit("classic_play", {
+        id: room._id,
+        leftCard: leftCard,
+        rightCard: droppedCardRef,
+        pileIndex: pileIndex,
+        opponentCard: currentHandCard,
+        gameOver: checkWinner(),
+      });
     };
 
     emitEvent();
@@ -216,26 +266,40 @@ const checkWinner = () => {
     let tempCardIndex = cardIndex;
 
     if (tempCardIndex === 20) {
-        return; 
+      return;
     }
 
-    const cardSetters = [setFirstCard, setSecondCard, setThirdCard, setFourthCard, setFifthCard];
+    const cardSetters = [
+      setFirstCard,
+      setSecondCard,
+      setThirdCard,
+      setFourthCard,
+      setFifthCard,
+    ];
     const cardValues = [card1, card2, card3, card4, card5];
     let opponentCards = [card1, card2, card3, card4, card5];
 
     for (let i = 0; i < cardSetters.length; i++) {
-        if (cardValues[i] === "" && tempCardIndex !== 20) {
-            console.log(`card ${i + 1} empty`);
-            opponentCards[i] = cards[tempCardIndex].reference
-            cardSetters[i](cards[tempCardIndex].reference);
-            tempCardIndex++;
-        }
+      if (cardValues[i] === "" && tempCardIndex !== 20) {
+        opponentCards[i] = cards[tempCardIndex].reference;
+        cardSetters[i](cards[tempCardIndex].reference);
+        tempCardIndex++;
+      } else if (cardValues[i] === "" && tempCardIndex === 20) {
+        cardSetters[i]("no-card");
+      }
     }
 
     setCardIndex(tempCardIndex);
 
     const emitEvent = () => {
-      socket.emit("classic_play", { id: room._id, leftCard: leftCard, rightCard: rightCard, pileIndex: pileIndex, opponentCard: opponentCards, gameOver: isGameOver });
+      socket.emit("classic_play", {
+        id: room._id,
+        leftCard: leftCard,
+        rightCard: rightCard,
+        pileIndex: pileIndex,
+        opponentCard: opponentCards,
+        gameOver: isGameOver,
+      });
     };
 
     emitEvent();
@@ -243,48 +307,103 @@ const checkWinner = () => {
 
   //---------------------------------------------------------------------------------
 
-  //---------------------------these function assist handle pile click----------
+  //---------------------------these function assist handle pile click-----------------
   const checkValidity = (card, left, right) => {
     return !(isValidDrop(card, left) || isValidDrop(card, right));
   };
 
   const areAllCardsInvalid = (cardsList, left, right) => {
-    
     return cardsList.every((card) => checkValidity(card, left, right));
   };
- //---------------------------------------------------------------------------
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      // Generate a random index between 0 and i (inclusive)
+      const j = Math.floor(Math.random() * (i + 1));
 
+      // Swap elements at indices i and j
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
- //-----------------function help handling pile click----------------------------
   const handlePileClick = () => {
-    if(pileIndex === 5) return // I will continue to reshuffle the card
     let tempIndex = pileIndex;
     if ([card1, card2, card3, card4, card5].some((card) => card === "")) return;
-    if(opponentCard.some((card) => card === "")) return;
+    if (opponentCard.some((card) => card === "")) return;
 
     const cardsList = [card1, card2, card3, card4, card5];
-    console.log("opponent card: ")
-    console.log(opponentCard)
-    console.log("player Card: ")
-    console.log(cardsList)
-    if (areAllCardsInvalid(cardsList, leftCard, rightCard) && areAllCardsInvalid(opponentCard, leftCard, rightCard)) {
-      console.log("all cards are invalid")
-      setLeftCard(leftPile[tempIndex].reference)
-      setRightCard(rightPile[tempIndex].reference)
-      setPileIndex(tempIndex + 1);
+    console.log(cardsList);
+    console.log(opponentCard);
+
+    if (
+      areAllCardsInvalid(cardsList, leftCard, rightCard) &&
+      areAllCardsInvalid(opponentCard, leftCard, rightCard)
+    ) {
+      setLeftCard(leftPile[tempIndex].reference);
+      setRightCard(rightPile[tempIndex].reference);
+      tempIndex += 1;
+
+      let tempLeftPile = [];
+      let tempRightPile = [];
+      if (tempIndex == 5) {
+        const cardShuffle = shuffleArray(usedCard);
+        const halfwayPoint = Math.ceil(cardShuffle.length / 2);
+        tempLeftPile = cardShuffle.slice(0, halfwayPoint);
+        tempRightPile = cardShuffle.slice(halfwayPoint);
+        tempIndex = 0;
+        setLeftPile(tempLeftPile);
+        setRightPile(tempRightPile);
+        setCardIndex(0);
+      }
+
+      setPileIndex(tempIndex);
       const emitEvent = () => {
         let opponentCards = [card1, card2, card3, card4, card5];
-        socket.emit("classic_play", { id: room._id, leftCard: leftPile[tempIndex+1].reference, rightCard: rightPile[tempIndex+1].reference, pileIndex: tempIndex + 1, opponentCard: opponentCards, gameOver: isGameOver });
+        socket.emit("classic_play", {
+          id: room._id,
+          leftCard: leftPile[tempIndex + 1].reference,
+          rightCard: rightPile[tempIndex + 1].reference,
+          leftPile: tempLeftPile,
+          rightPile: tempRightPile,
+          pileIndex: tempIndex,
+          opponentCard: opponentCards,
+          gameOver: isGameOver,
+        });
       };
-  
+
       emitEvent();
     }
   };
+
+  //-----------------------Leave room handle------------------------
+  const leaveRoomClick = async () => {
+    const roomId = { id: room._id };
+    console.log(roomId);
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/room/deleteRoom/${room._id}`,
+        {
+          method: "DELETE",
+          body: JSON.stringify({ _id: roomId }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch room");
+      } else {
+        // altered from navigate to socket.emit
+        socket.emit("leave_room", roomId);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   //-----------------------------------------------------------------------------------
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <GameResult gameOver={isGameOver} isWinner={isWinner}/>
+      <GameResult gameOver={isGameOver} isWinner={isWinner} />
       <Container className="container-classic">
         <div className="cards">
           <Row xs={6} sm={6} md={6} lg={6}>
@@ -346,7 +465,9 @@ const checkWinner = () => {
             <Col>
               <div className="card" onClick={handlePileClick}>
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                <div className="textOverlay">{rightPile.length - pileIndex}</div>
+                <div className="textOverlay">
+                  {rightPile.length - pileIndex}
+                </div>
               </div>
             </Col>
           </Row>
@@ -372,13 +493,16 @@ const checkWinner = () => {
             <Col>
               <div className="card" onClick={handleCardClick}>
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                <div className="textOverlay">
-                  {cards.length - cardIndex}
-                </div>
+                <div className="textOverlay">{cards.length - cardIndex}</div>
               </div>
             </Col>
           </Row>
         </div>
+        <Col>
+          <div>
+            <button onClick={leaveRoomClick}>Leave Room</button>
+          </div>
+        </Col>
       </Container>
     </DndProvider>
   );
