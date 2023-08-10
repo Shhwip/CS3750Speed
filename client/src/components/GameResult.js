@@ -32,7 +32,7 @@ function GameResult({ gameOver, isWinner }) {
                 <Modal.Body>
                     {/* Use Bootstrap utility classes for text colors */}
                     <p className={isWinner ? "text-success" : "text-danger"}>
-                        {isWinner ? "You lose" : "You Win"}
+                        {isWinner ? "You win" : "You lose"}
                     </p>
                 </Modal.Body>
             </Modal>
