@@ -46,7 +46,7 @@ function LobbyPage({ userName }) {
   }
 
   async function JoinRoom(roomId) {
-    const newUser = {roomId: roomId, user2: userName+"2", numPlayer: 2}
+    const newUser = {roomId: roomId, user2: userName+"2"}
     let room = {};
     await fetch("http://localhost:5050/api/room/updateUser2", {
       method: "PUT",
