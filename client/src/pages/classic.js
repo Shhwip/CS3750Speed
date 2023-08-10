@@ -55,8 +55,8 @@ const Classic = ({ numPlayer, room }) => {
   const [pileIndex, setPileIndex] = useState(1);
   const [leftPile, setLeftPile] = useState(room.leftPile);
   const [rightPile, setRightPile] = useState(room.rightPile);
-  const [leftCard, setLeftCard] = useState(room.leftPile[0].reference);
-  const [rightCard, setRightCard] = useState(room.rightPile[0].reference);
+  const [leftCard, setLeftCard] = useState(room.leftPile[0]);
+  const [rightCard, setRightCard] = useState(room.rightPile[0]);
   const [card1, setFirstCard] = useState("");
   const [card2, setSecondCard] = useState("");
   const [card3, setThirdCard] = useState("");
@@ -70,24 +70,24 @@ const Classic = ({ numPlayer, room }) => {
   useEffect(() => {
     let selectedCards = numPlayer === 1 ? room.user1Cards : room.user2Cards;
     setCards(selectedCards);
-    setFirstCard(selectedCards[0].reference);
-    setSecondCard(selectedCards[1].reference);
-    setThirdCard(selectedCards[2].reference);
-    setFourthCard(selectedCards[3].reference);
-    setFifthCard(selectedCards[4].reference);
+    setFirstCard(selectedCards[0]);
+    setSecondCard(selectedCards[1]);
+    setThirdCard(selectedCards[2]);
+    setFourthCard(selectedCards[3]);
+    setFifthCard(selectedCards[4]);
+
     setUsedCard([
-      ...room.leftPile.map((item) => item.reference),
-      ...room.rightPile.map((item) => item.reference),
+      ...room.leftPile.map((item) => item),
+      ...room.rightPile.map((item) => item),
     ]);
-    console.log("Used card: ");
-    console.log(usedCard);
+    
     const emitEvent = () => {
       let opponentCards = [
-        selectedCards[0].reference,
-        selectedCards[1].reference,
-        selectedCards[2].reference,
-        selectedCards[3].reference,
-        selectedCards[4].reference,
+        selectedCards[0],
+        selectedCards[1],
+        selectedCards[2],
+        selectedCards[3],
+        selectedCards[4],
       ];
       socket.emit("classic_play", {
         id: room._id,
@@ -134,7 +134,7 @@ const Classic = ({ numPlayer, room }) => {
           setLeftPile(data.leftPile);
           setRightPile(data.rightPile);
         }
-
+        
         setPileIndex(data.pileIndex);
         setGameOver(data.gameOver);
       }
@@ -280,8 +280,8 @@ const Classic = ({ numPlayer, room }) => {
 
     for (let i = 0; i < cardSetters.length; i++) {
       if (cardValues[i] === "" && tempCardIndex !== 20) {
-        opponentCards[i] = cards[tempCardIndex].reference;
-        cardSetters[i](cards[tempCardIndex].reference);
+        opponentCards[i] = cards[tempCardIndex];
+        cardSetters[i](cards[tempCardIndex]);
         tempCardIndex++;
       } else if (cardValues[i] === "" && tempCardIndex === 20) {
         cardSetters[i]("no-card");
@@ -334,25 +334,29 @@ const Classic = ({ numPlayer, room }) => {
     console.log(cardsList);
     console.log(opponentCard);
 
-    if (
-      areAllCardsInvalid(cardsList, leftCard, rightCard) &&
-      areAllCardsInvalid(opponentCard, leftCard, rightCard)
-    ) {
-      setLeftCard(leftPile[tempIndex].reference);
-      setRightCard(rightPile[tempIndex].reference);
+    if (areAllCardsInvalid(cardsList, leftCard, rightCard) && areAllCardsInvalid(opponentCard, leftCard, rightCard)) {
+      setLeftCard(leftPile[tempIndex]);
+      setRightCard(rightPile[tempIndex]);
       tempIndex += 1;
 
       let tempLeftPile = [];
       let tempRightPile = [];
-      if (tempIndex == 5) {
+      console.log("left pile: ")
+      console.log(leftPile)
+      console.log("right pile: ")
+      console.log(rightPile)
+
+      if (tempIndex == leftPile.length - 1 || tempIndex == rightPile.length - 1) {
+     
         const cardShuffle = shuffleArray(usedCard);
         const halfwayPoint = Math.ceil(cardShuffle.length / 2);
         tempLeftPile = cardShuffle.slice(0, halfwayPoint);
         tempRightPile = cardShuffle.slice(halfwayPoint);
         tempIndex = 0;
+       
+
         setLeftPile(tempLeftPile);
         setRightPile(tempRightPile);
-        setCardIndex(0);
       }
 
       setPileIndex(tempIndex);
@@ -360,13 +364,14 @@ const Classic = ({ numPlayer, room }) => {
         let opponentCards = [card1, card2, card3, card4, card5];
         socket.emit("classic_play", {
           id: room._id,
-          leftCard: leftPile[tempIndex + 1].reference,
-          rightCard: rightPile[tempIndex + 1].reference,
+          leftCard: leftPile[tempIndex],
+          rightCard: rightPile[tempIndex],
           leftPile: tempLeftPile,
           rightPile: tempRightPile,
           pileIndex: tempIndex,
           opponentCard: opponentCards,
           gameOver: isGameOver,
+          
         });
       };
 
@@ -434,7 +439,9 @@ const Classic = ({ numPlayer, room }) => {
             <Col>
               <div className="card">
                 <img src={cardBack} alt="back of card" />
-                <div className="textOverlay">{cards.length}</div>
+                {/*
+                  <div className="textOverlay">{cards.length}</div>
+                */}
               </div>
             </Col>
           </Row>
@@ -444,7 +451,9 @@ const Classic = ({ numPlayer, room }) => {
             <Col>
               <div className="card" onClick={handlePileClick}>
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+                {/*
                 <div className="textOverlay">{leftPile.length - pileIndex}</div>
+                */}
               </div>
             </Col>
             <Col>
@@ -464,9 +473,9 @@ const Classic = ({ numPlayer, room }) => {
             <Col>
               <div className="card" onClick={handlePileClick}>
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                <div className="textOverlay">
+                {/*<div className="textOverlay">
                   {rightPile.length - pileIndex}
-                </div>
+                </div>*/}
               </div>
             </Col>
           </Row>

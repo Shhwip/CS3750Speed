@@ -20,13 +20,13 @@ router.post("/createRoom", async(req, res) => {
         // Swap elements array[i] and array[j]
         [cards[i], cards[j]] = [cards[j], cards[i]];
     }
-    if(gameType == "Classic"){
+    let cardReferences = cards.map(card => card.reference);
 
-    }
-    let user1Cards = cards.slice(0, 20);
-    let user2Cards = cards.slice(20, 40);
-    let leftPile = cards.slice(40, 46);
-    let rightPile = cards.slice(46, 52);
+    let user1Cards = cardReferences.slice(0, 20);
+    let user2Cards = cardReferences.slice(20, 40);
+    let leftPile = cardReferences.slice(40, 46);
+    let rightPile = cardReferences.slice(46, 52);
+    
     let result = await collection.insertOne({gameType, user1, user2, user1Cards, user2Cards, leftPile, rightPile});
     if (result && result.insertedId) {
         const newRoom = {
