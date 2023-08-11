@@ -10,7 +10,7 @@ import CardGroup from 'react-bootstrap/CardGroup';
 
 
 const WaitingRoomPage = () => {
-  
+
   const location = useLocation();
   const numPlayer = location.state.numPlayer;
   const { id } = useParams();
@@ -46,7 +46,7 @@ const WaitingRoomPage = () => {
     const handleUserJoined = (data) => {
       console.log('Another user joined the room');
       fetchRoom();
-      
+
     };
 
     socket.on("user_joined", handleUserJoined);
@@ -58,13 +58,11 @@ const WaitingRoomPage = () => {
 
   useEffect(() => {
 
-    
     const handleReceiveMessage = (data) => {
       console.log("READY: " + numPlayerReady)
       setPlayerReady(data.numPlayerReady);
       if (data.numPlayerReady === 2) {
         setStartGame(true);
-        setShowModal(false);
       }
     };
 
@@ -97,29 +95,28 @@ const WaitingRoomPage = () => {
     setShowModal(false);
   }
 
-  const leaveRoomClick = async () => {
-    const roomId = { id: id }
+  const leaveRoomClick = async() => {
+    const roomId = {id: id }
     console.log(roomId);
-    try {
-      const response = await fetch(`http://localhost:5050/api/room/deleteRoom/${id}`, {
+  try {
+      const response = await fetch(`http://localhost:5050/api/room/deleteRoom/${id}`, { 
         method: "DELETE",
-        body: JSON.stringify({ _id: roomId })
+        body: JSON.stringify({_id: roomId})
       });
       const data = await response.json();
-      if (!response.ok) { 
+      if (!response.ok) {
         throw new Error(data.message || "Failed to fetch room");
       }
       else {
         // altered from navigate to socket.emit
         socket.emit("leave_room", roomId);
-
+        
       }
     } catch (error) {
       console.error(error);
     }
 
-  }
-
+}
   useEffect(() => {
     const leaveRoom = () => {
       navigate("/lobby");
@@ -141,10 +138,9 @@ const WaitingRoomPage = () => {
   return (
     <>
       {showClassic ? (
-        <Classic numPlayer={numPlayer} room={room} />
+        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} />
       ) : (
         <>
-
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
           <h2>{"Game Type: " + room.gameType}</h2>
           <CardGroup className="w-50">
@@ -153,7 +149,7 @@ const WaitingRoomPage = () => {
               <Card.Body>
                 <Card.Title>USER:</Card.Title>
                 <Card.Text>
-                  {room.user1 }
+                  {room.user1}
                 </Card.Text>
               </Card.Body>
               <Card.Footer>
@@ -180,7 +176,6 @@ const WaitingRoomPage = () => {
           <div className="row">
             <h3>Players Ready: {numPlayerReady} </h3>
             <WaitingModal show={showModal} handleClose={handlePlayerClose} />
-
           </div>
         </>
       )}

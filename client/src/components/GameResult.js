@@ -1,43 +1,117 @@
-import { useState, useEffect } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import { useState, useEffect } from "react";
+import Modal from "react-bootstrap/Modal";
+import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import socket from "../socket";
 
-function GameResult({ gameOver, isWinner }) {
-    // State for modal visibility
-    const [show, setShow] = useState(false);
 
-    // Navigation hook
-    const navigate = useNavigate();
 
-    // Handlers for modal open and close
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+function GameResult({ gameOver, isWinner, id, setShowClassic }) {
+  // State for modal visibility
+  const [show, setShow] = useState(false);
+  const [isClickedPlayAgain, setIsClickedPlayAgain] = useState(false);
 
-    // Handle submission: Close modal and navigate to home
+  // Navigation hook
+  const navigate = useNavigate();
+
+  // Handlers for modal open and close
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  // Handle submission: Close modal and navigate to home
+
+  // Automatically show the modal when game is over
+  useEffect(() => {
+    if (gameOver) {
+      handleShow();
+    }
+  }, [gameOver]);
+
+  useEffect(() => {
+    const handlePlayAgainEvent = (data) => {
+        setIsClickedPlayAgain(data.isClickedPlayAgain);
+    };
+    
+    socket.on("play_again", handlePlayAgainEvent);
+    
+    return () => {
+        socket.off("play_again", handlePlayAgainEvent);
+    };
+}, []);
+
+  
+  async function handlePlayAgain(){
+    if(!isClickedPlayAgain){
+        setIsClickedPlayAgain(true);
+        await fetch(`http://localhost:5050/api/room/classicPlayAgain/${id}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).then((response) =>{
+              if(!response.ok){
+                  throw Error("Fail to update room");
+              }
+              else{
+                  return response.json();
+              }
+          }).then((data) =>{
+              setShowClassic(false);
+              socket.emit("play_again", {isClickedPlayAgain: true})
+          }).catch(error =>{
+              console.error(error);
+          })
+    }
+    else{
+        setShowClassic(false);
+    }
    
+  }
 
-    // Automatically show the modal when game is over
-    useEffect(() => {
-        if (gameOver) {
-            handleShow();
+  const leaveRoomClick = async () => {
+    const roomId = { id: id};
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/room/deleteRoom/${id}`,
+        {
+          method: "DELETE",
+          body: JSON.stringify({ _id: roomId }),
         }
-    }, [gameOver]);
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch room");
+      } else {
+        // altered from navigate to socket.emit
+        socket.emit("leave_room", roomId);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    return (
-        <>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Game Over</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {/* Use Bootstrap utility classes for text colors */}
-                    <p className={isWinner ? "text-success" : "text-danger"}>
-                        {isWinner ? "You lose" : "You Win"}
-                    </p>
-                </Modal.Body>
-            </Modal>
-        </>
-    );
+  return (
+    <>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Game Over</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Use Bootstrap utility classes for text colors */}
+          <p className={isWinner ? "text-success" : "text-danger"}>
+            {isWinner ? "You win" : "You lose"}
+          </p>
+          <div className="d-flex justify-content-center">
+            <Button style={{ marginRight: "8px" }} variant="primary" onClick={handlePlayAgain}>
+              Play Again
+            </Button>
+            <Button variant="secondary" onClick={leaveRoomClick}>Leave Room</Button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
 }
 
 export default GameResult;

@@ -37,8 +37,19 @@ async function checkUserExist(collection, userName, email) {
 
 // Define the register endpoint
 router.post("/register", async (req, res) => {
-  const { userName, email, password, salt } = req.body;
+  const { userName, email, password, salt, } = req.body;
   let collection = await db.collection("userAuthentication");
+
+  let recordCollection = await db.collection("records");
+  let newDocument = {
+    name: userName,
+    gamesplayed: 0,
+    gameswon: 0,
+    highscore: 0,
+  };
+
+
+  console.log(req.body);
 
   const userExist = await checkUserExist(collection, userName, email);
   if (userExist) {
@@ -46,7 +57,8 @@ router.post("/register", async (req, res) => {
     return res.status(409).send(userExist);
   }
 
-  let result = await collection.insertOne({ userName, email, password, salt });
+  let result = await collection.insertOne({ userName, email, password, salt, });
+  let recordResult = await recordCollection.insertOne(newDocument);
   sessionMiddleware(req, res, () => {
     req.session.user = { userName }; // Save user to session upon successful registration
   });
@@ -112,7 +124,5 @@ router.get("/isAuth", async (req, res) => {
     }
   });
 });
-
-
 
 export default router;
