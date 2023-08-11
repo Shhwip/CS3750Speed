@@ -48,7 +48,7 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
   );
 };
 
-const Classic = ({ numPlayer, room }) => {
+const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame  }) => {
   const [cards, setCards] = useState([]);
   const [opponentCard, setOponentCard] = useState([]);
   const [cardIndex, setCardIndex] = useState(5);
@@ -75,6 +75,8 @@ const Classic = ({ numPlayer, room }) => {
     setThirdCard(selectedCards[2]);
     setFourthCard(selectedCards[3]);
     setFifthCard(selectedCards[4]);
+    setPlayerReady(0);
+    setStartGame(false);
 
     setUsedCard([
       ...room.leftPile.map((item) => item),
@@ -407,7 +409,7 @@ const Classic = ({ numPlayer, room }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <GameResult gameOver={isGameOver} isWinner={isWinner} />
+      <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowClassic = {setShowClassic} />
       <Container className="container-classic">
         <div className="cards">
           <Row xs={6} sm={6} md={6} lg={6}>
