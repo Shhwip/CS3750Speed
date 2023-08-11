@@ -51,7 +51,7 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id + " conncted");
+  console.log(socket.id + " connected");
 
   socket.on("send_message", (data) =>{
     io.emit("receive_message", (data));
