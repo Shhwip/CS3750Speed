@@ -37,8 +37,8 @@ const WaitingRoomPage = () => {
     joinRoom();
     fetchRoom();
 
-    const handleUserJoined = (data) => {
-      console.log('Another user joined the room: ');
+    const handleUserJoined = () => {
+      console.log('Another user joined the room');
       fetchRoom();
     };
 
@@ -116,48 +116,9 @@ const WaitingRoomPage = () => {
   return (
     <>
       {showClassic ? (
-        <Classic numPlayer= {numPlayer} room = {room}  setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame}/>
+        <Classic numPlayer= {numPlayer} room = {room} />
       ) : (
         <>
-<<<<<<< HEAD
-          <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
-          <h2>{"Game Type: " + room.gameType}</h2>
-          <CardGroup className="w-50">
-            <Card className="m-5">
-              <Card.Img  variant="top" src="https://images.squarespace-cdn.com/content/v1/50f79c6fe4b00d3480c9bbf0/1603139268457-L8WP2GF1EDTQS1YIEJLY/LinkedIn-Silhouette.jpg"/>
-              <Card.Body>
-                <Card.Title>USER:</Card.Title>
-                <Card.Text>
-                  {room.user1}
-                </Card.Text>
-              </Card.Body>
-              <Card.Footer>
-                <button onClick={handleReadyPlayer}>Ready</button>
-                <button onClick={leaveRoomClick}>Leave Room</button>
-              </Card.Footer>
-            </Card>
-            <Card className="m-5">
-              <Card.Img variant="top" src="https://images.squarespace-cdn.com/content/v1/50f79c6fe4b00d3480c9bbf0/1603139268457-L8WP2GF1EDTQS1YIEJLY/LinkedIn-Silhouette.jpg" />
-              <Card.Body>
-                <Card.Title>USER:</Card.Title>
-                <Card.Text>
-                  {room.user2}
-                </Card.Text>
-                <Card.Footer>
-                  Player Ready: {t}
-                </Card.Footer>
-              </Card.Body>
-            </Card>
-            <div className="m-5">
-              {startGame ? <Timer /> : null}
-            </div>
-          </CardGroup>
-          <div className="row">
-            <h3>Players Ready: {numPlayerReady} </h3>
-            <WaitingModal show={showModal} handleClose={() => setShowModal(false) || setCloseClicked(true) || setPlayerReady(numPlayerReady - 1)} />
-          </div>
-          </>
-=======
           {startGame ? <Timer /> : null}
           <h1>{"This is waiting room, game type: " + room.gameType}</h1>
           <h2>{room.user1}</h2>
@@ -167,7 +128,6 @@ const WaitingRoomPage = () => {
         <button onClick={leaveRoomClick}>Leave Room</button>
       </div>
         </>
->>>>>>> 725c6d96311619ecb0f80a54984cc38f7cf7b1b5
       )}
     </>
   );
