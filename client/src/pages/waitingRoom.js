@@ -77,6 +77,9 @@ const WaitingRoomPage = () => {
     if (startGame) {
       setTimeout(() => {
         setShowClassic(true);
+        setShowModal(false)
+        setStartGame(false);
+        setPlayerReady(0)
       }, 3000); // 3 seconds
     }
   }, [startGame]);
