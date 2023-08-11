@@ -7,18 +7,18 @@ import { useNavigate } from "react-router-dom";
 import WaitingModal from "../components/modals";
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
-import Avatar from '../png/LinkedIn-Silhouette (1).jpg'
+
+
 const WaitingRoomPage = () => {
+  
   const location = useLocation();
   const numPlayer = location.state.numPlayer;
-
   const { id } = useParams();
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
   const [startGame, setStartGame] = useState(false);
   const [showClassic, setShowClassic] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [closeClicked, setCloseClicked] = useState(false);
   const navigate = useNavigate();
 
   const fetchRoom = async () => {
@@ -43,9 +43,10 @@ const WaitingRoomPage = () => {
     joinRoom();
     fetchRoom();
 
-    const handleUserJoined = () => {
+    const handleUserJoined = (data) => {
       console.log('Another user joined the room');
       fetchRoom();
+      
     };
 
     socket.on("user_joined", handleUserJoined);
@@ -57,8 +58,9 @@ const WaitingRoomPage = () => {
 
   useEffect(() => {
 
+    
     const handleReceiveMessage = (data) => {
-      console.log(numPlayerReady)
+      console.log("READY: " + numPlayerReady)
       setPlayerReady(data.numPlayerReady);
       if (data.numPlayerReady === 2) {
         setStartGame(true);
@@ -83,12 +85,17 @@ const WaitingRoomPage = () => {
 
   const handleReadyPlayer = async () => {
     const updatedNumPlayerReady = numPlayerReady + 1;
-
     setPlayerReady(updatedNumPlayerReady)
     socket.emit("join_room", { roomId: room._id, numPlayerReady: updatedNumPlayerReady });
     setShowModal(true);
-
   };
+
+  const handlePlayerClose = () => {
+    const updatedNumPlayerReady = numPlayerReady - 1;
+    setPlayerReady(updatedNumPlayerReady)
+    socket.emit("join_room", { roomId: room._id, numPlayerReady: updatedNumPlayerReady });
+    setShowModal(false);
+  }
 
   const leaveRoomClick = async () => {
     const roomId = { id: id }
@@ -99,7 +106,7 @@ const WaitingRoomPage = () => {
         body: JSON.stringify({ _id: roomId })
       });
       const data = await response.json();
-      if (!response.ok) {
+      if (!response.ok) { 
         throw new Error(data.message || "Failed to fetch room");
       }
       else {
@@ -125,7 +132,7 @@ const WaitingRoomPage = () => {
   })
 
   if (numPlayerReady == 0) {
-    var t = "No"
+    var t = "NO"
   }
   else {
     t = "YES"
@@ -137,16 +144,16 @@ const WaitingRoomPage = () => {
         <Classic numPlayer={numPlayer} room={room} />
       ) : (
         <>
-          
+
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
           <h2>{"Game Type: " + room.gameType}</h2>
           <CardGroup className="w-50">
             <Card className="m-5">
-              <Card.Img  variant="top" src="https://images.squarespace-cdn.com/content/v1/50f79c6fe4b00d3480c9bbf0/1603139268457-L8WP2GF1EDTQS1YIEJLY/LinkedIn-Silhouette.jpg"/>
+              <Card.Img variant="top" src="https://images.squarespace-cdn.com/content/v1/50f79c6fe4b00d3480c9bbf0/1603139268457-L8WP2GF1EDTQS1YIEJLY/LinkedIn-Silhouette.jpg" />
               <Card.Body>
                 <Card.Title>USER:</Card.Title>
                 <Card.Text>
-                  {room.user1}
+                  {room.user1 }
                 </Card.Text>
               </Card.Body>
               <Card.Footer>
@@ -172,10 +179,10 @@ const WaitingRoomPage = () => {
           </CardGroup>
           <div className="row">
             <h3>Players Ready: {numPlayerReady} </h3>
-            <WaitingModal show={showModal} handleClose={() => setShowModal(false) || setCloseClicked(true) || setPlayerReady(numPlayerReady - 1)} />
-            
+            <WaitingModal show={showModal} handleClose={handlePlayerClose} />
+
           </div>
-          </>
+        </>
       )}
     </>
   );
