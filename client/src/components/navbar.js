@@ -30,13 +30,13 @@ export default function Navbar({isAuth}) {
     }
     return (
         <div>
-        <div className="container">
-            <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
+        
+            <nav className="navbar navbar-dark bg-dark">
                 <NavLink className="navbar-brand" to="/">Out of Town - Speed</NavLink>
                 <div className="navbar mx-auto">
                     <NavList />
                 </div>
             </nav>
-        </div>
+        
         </div>
 )}

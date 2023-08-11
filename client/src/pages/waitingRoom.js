@@ -137,7 +137,6 @@ const WaitingRoomPage = () => {
         <Classic numPlayer={numPlayer} room={room} />
       ) : (
         <>
-          
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
           <h2>{"Game Type: " + room.gameType}</h2>
           <CardGroup className="w-50">
@@ -173,7 +172,6 @@ const WaitingRoomPage = () => {
           <div className="row">
             <h3>Players Ready: {numPlayerReady} </h3>
             <WaitingModal show={showModal} handleClose={() => setShowModal(false) || setCloseClicked(true) || setPlayerReady(numPlayerReady - 1)} />
-            
           </div>
           </>
       )}
