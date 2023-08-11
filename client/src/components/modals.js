@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { ModalBody } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner'
@@ -21,7 +19,7 @@ export default function WaitingModal(props) {
         <Button onClick={props.handleClose} >
           Close
         </Button>
-        <Button disabled="false">
+        <Button disabled={false}>
           Waiting
           <Spinner
             as="span"

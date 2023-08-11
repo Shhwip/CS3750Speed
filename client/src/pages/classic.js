@@ -48,7 +48,7 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
   );
 };
 
-const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame  }) => {
+const Classic = ({ numPlayer, room, setShowClassic  }) => {
   const [cards, setCards] = useState([]);
   const [opponentCard, setOponentCard] = useState([]);
   const [cardIndex, setCardIndex] = useState(5);
@@ -75,8 +75,6 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
     setThirdCard(selectedCards[2]);
     setFourthCard(selectedCards[3]);
     setFifthCard(selectedCards[4]);
-    setPlayerReady(0);
-    setStartGame(false);
 
     setUsedCard([
       ...room.leftPile.map((item) => item),
@@ -173,6 +171,9 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
     const currentRank = getCardRank(currentCardRef);
 
     const difference = Math.abs(droppedRank - currentRank);
+    if ((droppedRank === 1 && currentRank === 13) || (droppedRank === 13 && currentRank === 1)) {
+      return true;
+  }
     return difference === 1; // Return true if ranks differ by 1, else false
   };
 
@@ -202,8 +203,7 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
 
   //-------------------------check game over---------------------------------------
   const checkWinner = (currentHandCard) => {
-    console.log("check winner cardList: ");
-    console.log(currentHandCard);
+   
     // Check if all cards are empty and cardIndex is 20
     if (
       currentHandCard.every((card) => card === "" || card === "no-card") &&
@@ -333,8 +333,11 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
     if (opponentCard.some((card) => card === "")) return;
 
     const cardsList = [card1, card2, card3, card4, card5];
-    console.log(cardsList);
-    console.log(opponentCard);
+    console.log("pile click")
+    console.log("opponent: ")
+    console.log(opponentCard)
+    console.log("Card: ")
+    console.log(cardsList)
 
     if (areAllCardsInvalid(cardsList, leftCard, rightCard) && areAllCardsInvalid(opponentCard, leftCard, rightCard)) {
       setLeftCard(leftPile[tempIndex]);
@@ -343,10 +346,6 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
 
       let tempLeftPile = [];
       let tempRightPile = [];
-      console.log("left pile: ")
-      console.log(leftPile)
-      console.log("right pile: ")
-      console.log(rightPile)
 
       if (tempIndex == leftPile.length - 1 || tempIndex == rightPile.length - 1) {
      
@@ -384,7 +383,6 @@ const Classic = ({ numPlayer, room, setShowClassic, setPlayerReady, setStartGame
   //-----------------------Leave room handle------------------------
   const leaveRoomClick = async () => {
     const roomId = { id: room._id };
-    console.log(roomId);
     try {
       const response = await fetch(
         `http://localhost:5050/api/room/deleteRoom/${room._id}`,
