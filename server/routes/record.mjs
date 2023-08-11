@@ -1,5 +1,5 @@
 import express from "express";
-import db from "../db/conn.mjs";
+import db from "../config/db.mjs";
 
 const router = express.Router();
 
@@ -7,7 +7,18 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     let collection = await db.collection("records");
     let results = await collection.find().sort({gamesplayed: 1}).toArray();
+    //let results = await collection.find().toArray();
     res.send(results).status(200);
+  });
+
+  // This section will get an individual record
+  router.get("/:username", async (req, res) => {
+    let collection = await db.collection("records");
+    let query = {_id: new ObjectId(req.params.username)};
+    let result = await collection.findOne(query);
+  
+    if (!result) res.send("Not found").status(404);
+    else res.send(result).status(200);
   });
 
   // This section will help you update a record.

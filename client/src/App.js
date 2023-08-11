@@ -14,6 +14,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Classic from "./pages/classic";
 import WaitingRoomPage from "./pages/waitingRoom";
 import Logout from "./pages/logout";
+import Highscore from "./components/highScore";
 
 
 
@@ -62,6 +63,7 @@ function App() {
           <Route path="/classic" element={<Classic />}/>
           <Route path="/waitingroom/:id" element={<WaitingRoomPage />}/>
           <Route path="/logout" element={<Logout setAuthentiation={setAuthentiation}/>}/>
+          <Route path="/highscore" element={<Highscore/>} />
         </Route>
       </Routes>
     </>

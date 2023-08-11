@@ -14,6 +14,7 @@ export default function Navbar({isAuth}) {
                 <div>
                     <NavLink className="home px-5" to="/">Rules</NavLink>
                     <NavLink className="lobby px-5" to="/lobby">Lobby</NavLink>
+                    <NavLink className="high_scores px-5" to="/highscore">High Scores</NavLink>
                     <NavLink className="logout px-5" to="/logout">Logout</NavLink>
                 </div>
                 

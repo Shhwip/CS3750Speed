@@ -7,6 +7,7 @@ import api from "./routes/api.mjs"
 import deck from "./routes/deck.mjs"
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import record from "./routes/record.mjs";
 
 // Added for websockets/socket.io
 // run npm install socket.io
@@ -33,6 +34,7 @@ app.use(express.json());
 
 
 app.use('/api', api);
+app.use('/record', record);
 
 //app.use('/', router);
 
