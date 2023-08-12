@@ -1,5 +1,6 @@
 import express from "express";
 import db from "../config/db.mjs";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
@@ -12,14 +13,14 @@ router.get("/", async (req, res) => {
   });
 
   // This section will get an individual record
-  router.get("/:username", async (req, res) => {
-    let collection = await db.collection("records");
-    let query = {_id: new ObjectId(req.params.username)};
-    let result = await collection.findOne(query);
+  // router.get("/:username", async (req, res) => {
+  //   let collection = await db.collection("records");
+  //   let query = {_id: new ObjectId(req.params.username)};
+  //   let result = await collection.findOne(query);
   
-    if (!result) res.send("Not found").status(404);
-    else res.send(result).status(200);
-  });
+  //   if (!result) res.send("Not found").status(404);
+  //   else res.send(result).status(200);
+  // });
 
   // This section will help you update a record.
 router.put("/", async (req, res) => {
@@ -33,7 +34,7 @@ router.put("/", async (req, res) => {
     }
     gamesplayed += 1;
     const result = await collection.updateOne(
-        { _id: new ObjectId(id) },
+        { _id: new ObjectId(user._id) },
         { $set: { gamesplayed, gameswon } }
       );
     res.send(result).status(204);

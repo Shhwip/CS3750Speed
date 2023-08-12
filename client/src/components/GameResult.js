@@ -6,7 +6,7 @@ import socket from "../socket";
 
 
 
-function GameResult({ gameOver, isWinner, id, setShowClassic }) {
+function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
   // State for modal visibility
   const [show, setShow] = useState(false);
   const [isClickedPlayAgain, setIsClickedPlayAgain] = useState(false);
@@ -23,6 +23,7 @@ function GameResult({ gameOver, isWinner, id, setShowClassic }) {
   // Automatically show the modal when game is over
   useEffect(() => {
     if (gameOver) {
+      updateRecord();
       handleShow();
     }
   }, [gameOver]);
@@ -90,6 +91,22 @@ function GameResult({ gameOver, isWinner, id, setShowClassic }) {
       console.error(error);
     }
   };
+  
+  const updateRecord = async() => {
+    try {
+      const response = await fetch(`http://localhost:5050/record/`, {
+        method: 'PUT',
+        body: JSON.stringify({isWinner: isWinner, userName: userName})
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed update record!");
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <>
