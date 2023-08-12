@@ -2,10 +2,14 @@ import express from "express";
 import db from "../config/db.mjs";
 import { ObjectId } from "mongodb";
 import reshuffleCard from "../components/shuffleCard.mjs";
+import newCaliforniaGame from "./games/californiaSpeed.mjs";
 const router = express.Router();
 
 router.post("/createRoom", async (req, res) => {
+  
   let { gameType, user1 } = req.body;
+
+  if(gameType === "Classic"){
   const user2 = "";
 
   let collection = db.collection("Game-Room");
@@ -41,6 +45,29 @@ router.post("/createRoom", async (req, res) => {
     res.status(200).send(newRoom);
   } else {
     res.status(500).send({ message: "Failed to insert room." });
+  }
+  }else if(gameType === "California"){
+    gameID = await newCaliforniaGame();
+    let collection = db.collection("Game-Room");
+    let result = await collection.insertOne({
+      gameType,
+      user1,
+      user2,
+      gameID
+    });
+    if (result && result.insertedId) {
+      const newRoom = {
+        _id: result.insertedId,
+        gameType,
+        user1,
+        user2,
+        gameID
+      };
+      //console.log(newRoom);
+      res.status(200).send(newRoom);
+    } else {
+      res.status(500).send({ message: "Failed to insert room." });
+    }
   }
 });
 
