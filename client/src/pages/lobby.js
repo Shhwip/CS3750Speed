@@ -41,7 +41,7 @@ function LobbyPage({ userName }) {
     });
     setInsertRoom(!insertRoom);
     setShow(false);
-    navigate(`/waitingroom/${room._id}`, { state: { numPlayer: 1 } });
+    navigate(`/waitingroom/${room._id}`, { state: { numPlayer: 1, userName: userName } });
 
   }
 
@@ -67,7 +67,7 @@ function LobbyPage({ userName }) {
     }).catch(error =>{
         console.error(error);
     })
-    navigate(`/waitingroom/${roomId}`, { state: { numPlayer: 2} });
+    navigate(`/waitingroom/${roomId}`, { state: { numPlayer: 2,  userName: userName} });
 
     setInsertRoom(!insertRoom);
   }

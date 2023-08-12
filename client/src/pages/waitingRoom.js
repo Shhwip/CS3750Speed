@@ -13,6 +13,7 @@ const WaitingRoomPage = () => {
 
   const location = useLocation();
   const numPlayer = location.state.numPlayer;
+  const userName = location.state.userName;
   const { id } = useParams();
   const [room, setRoom] = useState({});
   const [numPlayerReady, setPlayerReady] = useState(0);
@@ -141,7 +142,7 @@ const WaitingRoomPage = () => {
   return (
     <>
       {showClassic ? (
-        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} />
+        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
       ) : (
         <>
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
