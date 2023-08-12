@@ -54,7 +54,7 @@ export default function Highscore() {
             <th>Name</th>
             <th>Games Played</th>
             <th>Games Won</th>
-            <th>High Score</th>
+            <th>Win Percentage</th>
           </tr>
         </thead>
         <tbody>{recordList()}</tbody>

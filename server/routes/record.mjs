@@ -31,13 +31,20 @@ router.put("/", async (req, res) => {
     let user = await collection.findOne({ name: userName });
     let gamesplayed = user.gamesplayed;
     let gameswon = user.gameswon;
+    let highscore = 0;
     if (isWinner) {
       gameswon += 1;
     }
     gamesplayed += 1;
+    if (gamesplayed === 0 && gameswon === 0){
+      highscore = 0;
+    }
+    else {
+      highscore = Number(((gameswon/gamesplayed) * 100).toFixed(2));
+    }
     const result = await collection.updateOne(
       { _id: new ObjectId(user._id) },
-      { $set: { gamesplayed, gameswon } }
+      { $set: { gamesplayed, gameswon, highscore } }
     );
     res.send(result).status(204);
   }
