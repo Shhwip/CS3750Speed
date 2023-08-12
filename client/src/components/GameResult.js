@@ -23,10 +23,15 @@ function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
   // Automatically show the modal when game is over
   useEffect(() => {
     if (gameOver) {
-      updateRecord();
-      handleShow();
+      const fetchDataAndUpdate = async () => {
+        await updateRecord();
+        handleShow();
+      };
+  
+      fetchDataAndUpdate();
     }
   }, [gameOver]);
+  
 
   useEffect(() => {
     const handlePlayAgainEvent = (data) => {
@@ -47,6 +52,7 @@ function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
         await fetch(`http://localhost:5050/api/room/classicPlayAgain/${id}`, {
             method: "PUT",
             credentials: "include",
+
             headers: {
               "Content-Type": "application/json",
             },
@@ -77,6 +83,9 @@ function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
         `http://localhost:5050/api/room/deleteRoom/${id}`,
         {
           method: "DELETE",
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ _id: roomId }),
         }
       );
@@ -94,8 +103,12 @@ function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
   
   const updateRecord = async() => {
     try {
+      console.log(isWinner);
       const response = await fetch(`http://localhost:5050/record/`, {
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({isWinner: isWinner, userName: userName})
       });
       const data = await response.json();

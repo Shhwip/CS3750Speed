@@ -60,7 +60,6 @@ function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/game/california" element={<CaliforniaPage />} />
           <Route path="/lobby" element={<LobbyPage  userName = {userSession.userName}/>} />
-          <Route path="/classic" element={<Classic userName= {userSession.userName}/>}/>
           <Route path="/waitingroom/:id" element={<WaitingRoomPage />}/>
           <Route path="/logout" element={<Logout setAuthentiation={setAuthentiation}/>}/>
           <Route path="/highscore" element={<Highscore/>} />

@@ -49,6 +49,8 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
 };
 
 const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
+  console.log("username: ")
+  console.log(userName)
   const [cards, setCards] = useState([]);
   const [opponentCard, setOponentCard] = useState([]);
   const [cardIndex, setCardIndex] = useState(5);
@@ -220,12 +222,12 @@ const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
   //-----------------------------------------------------------------
 
   //--------------------function for left and right card drop ------------------------------------
-  const handleLeftCardDrop = (droppedCardRef) => {
+  const handleLeftCardDrop = async (droppedCardRef) => {
     // Logic for when a card is dropped on the left card
     setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
 
     setLeftCard(droppedCardRef);
-    const currentHandCard = removeDroppedCard(droppedCardRef);
+    const currentHandCard = await removeDroppedCard(droppedCardRef);
     
     const emitEvent = () => {
       socket.emit("classic_play", {
@@ -241,11 +243,11 @@ const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
     emitEvent();
   };
 
-  const handleRightCardDrop = (droppedCardRef) => {
+  const handleRightCardDrop = async (droppedCardRef) => {
     // Logic for when a card is dropped on the right card
     setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
     setRightCard(droppedCardRef);
-    const currentHandCard = removeDroppedCard(droppedCardRef);
+    const currentHandCard = await removeDroppedCard(droppedCardRef);
     const emitEvent = () => {
       socket.emit("classic_play", {
         id: room._id,
