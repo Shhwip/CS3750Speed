@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
- 
+
 const Record = (props) => (
- <tr>
+  console.log(props.username),
+ <tr className={props.username === props.record.name ? "table-success" : null}>
    <td>{props.record.name}</td>
    <td>{props.record.gamesplayed}</td>
    <td>{props.record.gameswon}</td>
@@ -10,9 +11,8 @@ const Record = (props) => (
  </tr>
 );
  
-export default function Highscore() {
+export default function Highscore({userName}) {
  const [records, setRecords] = useState([]);
- 
  // This method fetches the records from the database.
  useEffect(() => {
    async function getRecords() {
@@ -40,15 +40,15 @@ export default function Highscore() {
         <Record
           record={record}
           key={record.name}
+          username={userName}
         />
       );
     });
   }
-
   return (
     <div>
       <h3>Record List</h3>
-      <table className="table table-striped" style={{ marginTop: 20 }}>
+      <table className="table" style={{ marginTop: 20 }}>
         <thead>
           <tr>
             <th>Name</th>

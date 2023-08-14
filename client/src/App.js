@@ -62,7 +62,7 @@ function App() {
           <Route path="/lobby" element={<LobbyPage  userName = {userSession.userName}/>} />
           <Route path="/waitingroom/:id" element={<WaitingRoomPage />}/>
           <Route path="/logout" element={<Logout setAuthentiation={setAuthentiation}/>}/>
-          <Route path="/highscore" element={<Highscore/>} />
+          <Route path="/highscore" element={<Highscore userName={userSession.userName} />} />
         </Route>
       </Routes>
     </>
