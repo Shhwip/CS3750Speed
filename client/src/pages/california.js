@@ -4,30 +4,26 @@ import spades_2 from "../png/2_of_spades.png"
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import socket from "../socket";
 
-let request = require("superagent");
-const url = "http://localhost:5050/game/california/";
-const response = await request(url + "new");
-const gameID = response.body.gameID;
+const request = require("superagent");
+const url = "http://localhost:5050/california/";
 
-const CaliforniaSpeed = () => {
-  const [gameState, setGameState] = useState(response.body.gameState);
+const CaliforniaSpeed = ({ numPlayer, room}) => {
+  const [gameState, setGameState] = useState([])
+  const [play, setPlay] = useState(0);
   console.log(gameState);
-  const [pile1, setPile1] = useState(gameState.pile1.at(-1).reference);
-  const [pile2, setPile2] = useState(gameState.pile2.at(-1).reference);
-  const [pile3, setPile3] = useState(gameState.pile3.at(-1).reference);
-  const [pile4, setPile4] = useState(gameState.pile4.at(-1).reference);
-  const [pile5, setPile5] = useState(gameState.pile5.at(-1).reference);
-  const [pile6, setPile6] = useState(gameState.pile6.at(-1).reference);
-  const [pile7, setPile7] = useState(gameState.pile7.at(-1).reference);
-  const [pile8, setPile8] = useState(gameState.pile8.at(-1).reference);
+  const [pile1, setPile1] = useState("");
+  const [pile2, setPile2] = useState("");
+  const [pile3, setPile3] = useState("");
+  const [pile4, setPile4] = useState("");
+  const [pile5, setPile5] = useState("");
+  const [pile6, setPile6] = useState("");
+  const [pile7, setPile7] = useState("");
+  const [pile8, setPile8] = useState("");
   
-  const [player1deck, setPlayer1deck] = useState(
-    gameState.player1deck.at(-1).reference
-  );
-  const [player2deck, setPlayer2deck] = useState(
-    gameState.player2deck.at(-1).reference
-  );
+  const [player1deck, setPlayer1deck] = useState(cardBack);
+  const [player2deck, setPlayer2deck] = useState(cardBack);
 
    const player1HandOnClick = () =>{
     console.log("I've been clicked player 1 hand")
@@ -39,35 +35,131 @@ const CaliforniaSpeed = () => {
 
    const onClickPile1 = () =>{
     console.log("I've been clicked pile 1")
+    setPlay(1);
    }
 
    const onClickPile2 = () =>{
     console.log("I've been clicked pile 2")
+    setPlay(2);
    }
 
    const onClickPile3 = () =>{
     console.log("I've been clicked pile 3")
+    setPlay(3);
    }
 
    const onClickPile4 = () =>{
     console.log("I've been clicked pile 4")
+    setPlay(4);
    }
 
    const onClickPile5 = () =>{
     console.log("I've been clicked pile 5")
+    setPlay(5);
    }
 
    const onClickPile6 = () =>{
     console.log("I've been clicked pile 6")
+    setPlay(6);
    }
 
    const onClickPile7 = () =>{
     console.log("I've been clicked pile 7")
+    setPlay(7);
    }
 
    const onClickPile8 = () =>{
     console.log("I've been clicked pile 8")
+    setPlay(8);
    }
+
+   // get all the cards ready
+   useEffect(() => {
+
+    const getGameState = async () => {
+      const response = await request(url + room.gameID)
+      .get();
+      setGameState(response.body.gameState);
+      if(numPlayer === 1)
+      {
+        setPile1(gameState.pile1.reference);
+        setPile2(gameState.pile2.reference);
+        setPile3(gameState.pile3.reference);
+        setPile4(gameState.pile4.reference);
+        setPile5(gameState.pile5.reference);
+        setPile6(gameState.pile6.reference);
+        setPile7(gameState.pile7.reference);
+        setPile8(gameState.pile8.reference);
+      }else if(numPlayer === 2)
+      {
+        setPile1(gameState.pile5.reference);
+        setPile3(gameState.pile7.reference);
+        setPile4(gameState.pile8.reference);
+        setPile5(gameState.pile1.reference);
+        setPile6(gameState.pile2.reference);
+        setPile7(gameState.pile3.reference);
+        setPile8(gameState.pile4.reference);
+        setPile2(gameState.pile6.reference);
+      }
+    }
+
+
+    getGameState();
+
+
+  }, []);
+
+  useEffect(() => {
+
+    const getGameState = async () => {
+      const response = await request(url + room.gameID)
+      .get();
+      setGameState(response.body.gameState);
+      if(numPlayer === 1)
+      {
+        setPile1(gameState.pile1.reference);
+        setPile2(gameState.pile2.reference);
+        setPile3(gameState.pile3.reference);
+        setPile4(gameState.pile4.reference);
+        setPile5(gameState.pile5.reference);
+        setPile6(gameState.pile6.reference);
+        setPile7(gameState.pile7.reference);
+        setPile8(gameState.pile8.reference);
+      }else if(numPlayer === 2)
+      {
+        setPile1(gameState.pile5.reference);
+        setPile3(gameState.pile7.reference);
+        setPile4(gameState.pile8.reference);
+        setPile5(gameState.pile1.reference);
+        setPile6(gameState.pile2.reference);
+        setPile7(gameState.pile3.reference);
+        setPile8(gameState.pile4.reference);
+        setPile2(gameState.pile6.reference);
+      }
+    }
+
+    const moveHandler = async (data) => {
+      console.log(data);
+      if(numPlayer === 1)
+      {
+        await request(url + room.gameID + "/" + data.play + "/" + numPlayer)
+        .patch();
+        getGameState();
+      } else if(numPlayer === 2)
+      {
+        let play = (data.play + 4) % 8;
+        await request(url + room.gameID + "/" + play + "/" + numPlayer)
+        .patch();
+        getGameState();
+      }
+    }
+    socket.on("california_play", moveHandler);
+
+    return () => {
+      socket.off("california_play", moveHandler);
+    };
+    
+  }, [socket, play]);
 
 
   return (

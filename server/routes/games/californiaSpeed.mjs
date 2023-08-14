@@ -104,6 +104,7 @@ californiaSpeed.get('/california/new', async (req, res) => {
 
 californiaSpeed.get('/california/:gameID', async (req, res) => {
     let result = await getGameState(req.params.gameID);
+    console.log(result);
     res.send(result).status(200);
 });
 
@@ -159,6 +160,7 @@ async function startNewGame()
     }
     return Promise.resolve(result);
 }
+
 // ----------------------------------------------
 // check if there are any valid plays
 function noValidPlay(gameState)
