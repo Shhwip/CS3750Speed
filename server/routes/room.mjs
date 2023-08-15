@@ -54,7 +54,7 @@ router.post("/createRoom", async (req, res) => {
       gameType,
       user1,
       user2,
-      gameID
+      gameID : gameID.gameID
     });
     if (result && result.insertedId) {
       const newRoom = {

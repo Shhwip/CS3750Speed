@@ -105,6 +105,7 @@ californiaSpeed.get('/california/new', async (req, res) => {
 californiaSpeed.get('/california/:gameID', async (req, res) => {
     let result = await getGameState(req.params.gameID);
     console.log(result);
+    console.log("return gamestate")
     res.send(result).status(200);
 });
 
@@ -133,13 +134,27 @@ californiaSpeed.get('/california/:gameID/shuffle', async (req, res) => {
 // return game state data from the database
 async function getGameState(gameID)
 {
+    console.log("--------------------");
+    console.log("gameID: " + gameID);
+    console.log("--------------------");
     let query = { _id: new ObjectId(gameID) };
     let collection = await db.collection("Games");
-    let gameState = 
+    let gameState = await collection.findOne(query)
+    let result =
     {
-        'gameState': await collection.findOne(query)
-    };
-    return Promise.resolve(gameState);
+        _id: gameState._id,
+        player1deck: gameState.player1deck.at(-1),
+        player2deck: gameState.player2deck.at(-1),
+        pile1: gameState.pile1.at(-1),
+        pile2: gameState.pile2.at(-1),
+        pile3: gameState.pile3.at(-1),
+        pile4: gameState.pile4.at(-1),
+        pile5: gameState.pile5.at(-1),
+        pile6: gameState.pile6.at(-1),
+        pile7: gameState.pile7.at(-1),
+        pile8: gameState.pile8.at(-1),
+    }
+    return Promise.resolve(result);
 
 }
 
@@ -178,6 +193,7 @@ function noValidPlay(gameState)
 // valid play
 function validPlay(pile, gameState)
 {
+    // keep track of valid plays
     let card = gameState["pile" + pile].at(-1);
     for(let i = 1; i < 9; i++)
     {
