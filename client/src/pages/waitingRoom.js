@@ -21,6 +21,7 @@ const WaitingRoomPage = () => {
   const [startGame, setStartGame] = useState(false);
   const [showClassic, setShowClassic] = useState(false);
   const [showCalifornia, setShowCalifornia] = useState(false);
+  const [showGame, setShowGame] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModalTimer, setShowModalTimer] = useState(false);
   const navigate = useNavigate();
@@ -44,12 +45,15 @@ const WaitingRoomPage = () => {
   };
 
   useEffect(() => {
-    joinRoom();
+   
     fetchRoom();
+    joinRoom();
 
     const handleUserJoined = (data) => {
       console.log('Another user joined the room');
-      fetchRoom();
+      setPlayerReady(data.numPlayerReady)
+      // fetchRoom();
+      // joinRoom();
 
     };
 
@@ -82,7 +86,7 @@ const WaitingRoomPage = () => {
   useEffect(() => {
     if (startGame) {
       setTimeout(() => {
-        setShowClassic(true);
+        setShowGame(true);
         setShowModal(false)
         setStartGame(false);
         setPlayerReady(0)
@@ -148,8 +152,8 @@ const WaitingRoomPage = () => {
   
   return (
     <>
-      {showClassic ? (
-        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
+      {showGame ? ( room.gameType === "Classic" ? <Classic numPlayer={numPlayer} room={room} setShowGame={setShowGame} setStartGame={setStartGame} userName={userName} /> :
+        <CaliforniaSpeed numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
       ) : (
         <>
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>

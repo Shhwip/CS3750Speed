@@ -72,8 +72,9 @@ io.on("connection", (socket) => {
     
     // Notify other clients in the same room that a user has joined.
     socket.to(data.roomId).emit("user_joined", {
+      numPlayerReady: data.numPlayerReady,
       roomId: data.roomId
-    });
+    }); 
   
     io.to(data.roomId).emit("receive_numPlayerReady", data);
     

@@ -2,37 +2,26 @@ import express from "express";
 import db from "../config/db.mjs";
 import { ObjectId } from "mongodb";
 import reshuffleCard from "../components/shuffleCard.mjs";
-import {startNewGame} from "./games/californiaSpeed.mjs";
+import { startNewGame } from "./games/californiaSpeed.mjs";
 const router = express.Router();
 
 router.post("/createRoom", async (req, res) => {
-  
+
   let { gameType, user1 } = req.body;
 
-  if(gameType === "Classic"){
-  const user2 = "";
+  if (gameType === "Classic") {
+    const user2 = "";
 
-  let collection = db.collection("Game-Room");
+    let collection = db.collection("Game-Room");
 
-  let cardReferences = await reshuffleCard();
+    let cardReferences = await reshuffleCard();
 
-  let user1Cards = cardReferences.slice(0, 20);
-  let user2Cards = cardReferences.slice(20, 40);
-  let leftPile = cardReferences.slice(40, 46);
-  let rightPile = cardReferences.slice(46, 52);
+    let user1Cards = cardReferences.slice(0, 20);
+    let user2Cards = cardReferences.slice(20, 40);
+    let leftPile = cardReferences.slice(40, 46);
+    let rightPile = cardReferences.slice(46, 52);
 
-  let result = await collection.insertOne({
-    gameType,
-    user1,
-    user2,
-    user1Cards,
-    user2Cards,
-    leftPile,
-    rightPile,
-  });
-  if (result && result.insertedId) {
-    const newRoom = {
-      _id: result.insertedId,
+    let result = await collection.insertOne({
       gameType,
       user1,
       user2,
@@ -40,13 +29,24 @@ router.post("/createRoom", async (req, res) => {
       user2Cards,
       leftPile,
       rightPile,
-    };
-    //console.log(newRoom);
-    res.status(200).send(newRoom);
-  } else {
-    res.status(500).send({ message: "Failed to insert room." });
-  }
-  }else if(gameType === "California"){
+    });
+    if (result && result.insertedId) {
+      const newRoom = {
+        _id: result.insertedId,
+        gameType,
+        user1,
+        user2,
+        user1Cards,
+        user2Cards,
+        leftPile,
+        rightPile,
+      };
+      //console.log(newRoom);
+      res.status(200).send(newRoom);
+    } else {
+      res.status(500).send({ message: "Failed to insert room." });
+    }
+  } else if (gameType === "California") {
     const user2 = "";
     let gameID = await startNewGame();
     let collection = db.collection("Game-Room");
@@ -54,7 +54,7 @@ router.post("/createRoom", async (req, res) => {
       gameType,
       user1,
       user2,
-      gameID : gameID.gameID
+      gameID: gameID.gameID
     });
     if (result && result.insertedId) {
       const newRoom = {
@@ -142,7 +142,7 @@ router.put("/classicPlayAgain/:id", async (req, res) => {
       { $set: { user1Cards, user2Cards, leftPile, rightPile } }
     );
     if (result.modifiedCount === 1) {
-      
+
       res.status(200).send({ message: "Shuffle card success" });
     } else {
       res.status(500).send({ message: "Failed to update user2." });

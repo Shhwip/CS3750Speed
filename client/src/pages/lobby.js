@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"; // import the hook
 
 function LobbyPage({ userName }) {
   const navigate = useNavigate();
-  const [selectedGame, setSelectedGame] = useState("");
+  const [selectedGame, setSelectedGame] = useState("California");
   const [rooms, setRooms] = useState([]);
   const [show, setShow] = useState(false);
   const [insertRoom, setInsertRoom] = useState(false);
@@ -17,7 +17,8 @@ function LobbyPage({ userName }) {
 
   async function createRoom() {
     let room = {};
-    const newRoom = { gameType: selectedGame, user1: userName + "1"};
+    console.log(selectedGame);
+    const newRoom = { gameType: selectedGame, user1: userName };
     await fetch("http://localhost:5050/api/room/createRoom", {
       method: "POST",
       credentials: "include",
@@ -46,7 +47,7 @@ function LobbyPage({ userName }) {
   }
 
   async function JoinRoom(roomId) {
-    const newUser = {roomId: roomId, user2: userName+"2"}
+    const newUser = {roomId: roomId, user2: userName}
     let room = {};
     await fetch("http://localhost:5050/api/room/updateUser2", {
       method: "PUT",
@@ -142,7 +143,7 @@ function LobbyPage({ userName }) {
                 />
                 <Card.Body>
                   <Card.Title>{room.gameType}</Card.Title>
-                  <Card.Text>{"Createed by: " +  room.user1.slice(0, -1)}</Card.Text>
+                  <Card.Text>{"Created by: " +  room.user1}</Card.Text>
                   <Button
                     variant="primary"
                     onClick={() => JoinRoom(room._id)}
