@@ -6,7 +6,7 @@ import socket from "../socket";
 
 
 
-function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
+function GameResult({ gameOver, isWinner, id, setShowGame, userName }) {
   // State for modal visibility
   const [show, setShow] = useState(false);
   const [isClickedPlayAgain, setIsClickedPlayAgain] = useState(false);
@@ -64,14 +64,14 @@ function GameResult({ gameOver, isWinner, id, setShowClassic, userName }) {
                   return response.json();
               }
           }).then((data) =>{
-              setShowClassic(false);
+            setShowGame(false);
               socket.emit("play_again", {isClickedPlayAgain: true})
           }).catch(error =>{
               console.error(error);
           })
     }
     else{
-        setShowClassic(false);
+      setShowGame(false);
     }
    
   }

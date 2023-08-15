@@ -48,7 +48,7 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
   );
 };
 
-const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
+const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
   console.log("username: ")
   console.log(userName)
   const [cards, setCards] = useState([]);
@@ -409,7 +409,7 @@ const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowClassic = {setShowClassic} userName={userName}/>
+      <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowGame = {setShowGame} userName={userName}/>
         <div className="cards">
           <Row className="m-0 p-0" xs={6} sm={6} md={6} lg={6}>
             <Col>

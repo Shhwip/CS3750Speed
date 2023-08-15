@@ -85,32 +85,35 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const collection = await db.collection("userAuthentication");
   const user = await collection.findOne({ email });
-  if(!user){
+  if (!user) {
     res.status(200).send({ match: false });
   }
-  const userName = user.userName
-  if (user.password === password) {
-    sessionMiddleware(req, res, () => {
-      req.session.user = { userName }; // Save user to session
-      res.status(200).send({ match: true });
-    });
-  } else {
-    res.status(200).send({ match: false });
+  else {
+    const userName = user.userName
+    if (user.password === password) {
+      sessionMiddleware(req, res, () => {
+        req.session.user = { userName }; // Save user to session
+        res.status(200).send({ match: true });
+      });
+    } else {
+      res.status(200).send({ match: false });
+    }
   }
+
 });
 
 router.post('/logout', (req, res) => {
-  sessionMiddleware(req, res, () =>{
+  sessionMiddleware(req, res, () => {
     req.session.destroy((err) => {
-      if(err) {
-        
-        return res.status(500).send({msg: 'Error logging out'});
+      if (err) {
+
+        return res.status(500).send({ msg: 'Error logging out' });
       }
       res.clearCookie('connect.sid');
-      res.status(200).send({msg: "Logout success"})
+      res.status(200).send({ msg: "Logout success" })
     })
   })
-  
+
 
 })
 
