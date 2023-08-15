@@ -7,20 +7,19 @@ const router = express.Router();
 // This section will help you get a list of all the records.
 router.get("/", async (req, res) => {
   let collection = await db.collection("records");
-  let results = await collection.find().sort({ gamesplayed: 1 }).toArray();
+  let results = await collection.find().limit(10).sort({ gamesplayed: -1 }).toArray();
   //let results = await collection.find().toArray();
   res.send(results).status(200);
 });
 
 // This section will get an individual record
-// router.get("/:username", async (req, res) => {
-//   let collection = await db.collection("records");
-//   let query = {_id: new ObjectId(req.params.username)};
-//   let result = await collection.findOne(query);
+router.get("/:username", async (req, res) => {
+  let collection = await db.collection("records");
+  let user = await collection.findOne({ name: req.params.username });
 
-//   if (!result) res.send("Not found").status(404);
-//   else res.send(result).status(200);
-// });
+  if (!user) res.send("Not found").status(404);
+  else res.send(user).status(200);
+});
 
 // This section will help you update a record.
 router.put("/", async (req, res) => {
