@@ -7,7 +7,7 @@ const router = express.Router();
 // This section will help you get a list of all the records.
 router.get("/", async (req, res) => {
   let collection = await db.collection("records");
-  let results = await collection.find().limit(10).sort({ gamesplayed: -1 }).toArray();
+  let results = await collection.find().limit(10).sort({ highscore: -1, gamesplayed: -1 }).toArray();
   //let results = await collection.find().toArray();
   res.send(results).status(200);
 });
