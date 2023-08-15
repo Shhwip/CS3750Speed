@@ -2,7 +2,7 @@ import express from "express";
 import db from "../config/db.mjs";
 import { ObjectId } from "mongodb";
 import reshuffleCard from "../components/shuffleCard.mjs";
-import newCaliforniaGame from "./games/californiaSpeed.mjs";
+import {startNewGame} from "./games/californiaSpeed.mjs";
 const router = express.Router();
 
 router.post("/createRoom", async (req, res) => {
@@ -47,7 +47,8 @@ router.post("/createRoom", async (req, res) => {
     res.status(500).send({ message: "Failed to insert room." });
   }
   }else if(gameType === "California"){
-    gameID = await newCaliforniaGame();
+    const user2 = "";
+    let gameID = await startNewGame();
     let collection = db.collection("Game-Room");
     let result = await collection.insertOne({
       gameType,

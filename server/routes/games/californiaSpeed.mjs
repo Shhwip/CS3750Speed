@@ -4,7 +4,7 @@ import db from "../../config/db.mjs";
 import CARDS from "../../resources/cardslist.mjs";
 import { ObjectId } from "mongodb";
 
-const californiaSpeed = express.Router();
+export const californiaSpeed = express.Router();
 
 // ----------------------------------------------
 // return fake game state data for testing
@@ -145,7 +145,7 @@ async function getGameState(gameID)
 
 // ----------------------------------------------
 // Start a new game
-async function startNewGame()
+export async function startNewGame()
 {
     let deck = await createDeck();
     let player1deck = new Array();
@@ -291,6 +291,3 @@ function win(player)
 {
     console.log(player + " wins");
 }
-
-
-export default californiaSpeed;
