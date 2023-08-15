@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useLocation } from 'react-router-dom';
 import socket from "../socket";
 import Classic from "./classic";
+import CaliforniaSpeed from "./california";
 import { useNavigate } from "react-router-dom";
 import WaitingModal from "../components/modals";
 import TimerModal from "../components/modalTimer";
@@ -19,6 +20,7 @@ const WaitingRoomPage = () => {
   const [numPlayerReady, setPlayerReady] = useState(0);
   const [startGame, setStartGame] = useState(false);
   const [showClassic, setShowClassic] = useState(false);
+  const [showCalifornia, setShowCalifornia] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModalTimer, setShowModalTimer] = useState(false);
   const navigate = useNavigate();
@@ -80,7 +82,8 @@ const WaitingRoomPage = () => {
   useEffect(() => {
     if (startGame) {
       setTimeout(() => {
-        setShowClassic(true);
+        setShowCalifornia(true);
+        setShowModal(false)
         setStartGame(false);
         setPlayerReady(0)
       }, 3000); // 3 seconds
@@ -145,8 +148,8 @@ const WaitingRoomPage = () => {
   
   return (
     <>
-      {showClassic ? (
-        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
+      {showCalifornia ? (
+        <CaliforniaSpeed numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
       ) : (
         <>
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>

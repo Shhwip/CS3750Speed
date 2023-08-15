@@ -11,7 +11,6 @@ const url = "http://localhost:5050/game/california/";
 
 const CaliforniaSpeed = ({ numPlayer, room}) => {
   const [gameState, setGameState] = useState({})
-  const [play, setPlay] = useState(0);
   const [pile1, setPile1] = useState("cardBack");
   const [pile2, setPile2] = useState("cardBack");
   const [pile3, setPile3] = useState("cardBack");
@@ -24,8 +23,15 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
   const [player1deck, setPlayer1deck] = useState(cardBack);
   const [player2deck, setPlayer2deck] = useState(cardBack);
 
-   const player1HandOnClick = () =>{
+   const player1HandOnClick = async () =>{
     console.log("I've been clicked player 1 hand")
+    await fetch(url + room.gameID + "/" + "scoop", {
+      method: "PATCH"
+    });
+
+      socket.emit("california_play", {
+        id: room._id,
+      });
    }
 
    const player2HandOnClick = () =>{
@@ -34,53 +40,75 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
 
    const onClickPile1 = () =>{
     console.log("I've been clicked pile 1")
-    setPlay(1);
+    moveHandler({play: 1});
    }
 
    const onClickPile2 = () =>{
     console.log("I've been clicked pile 2")
-    setPlay(2);
+    moveHandler({play: 2});
    }
 
    const onClickPile3 = () =>{
     console.log("I've been clicked pile 3")
-    setPlay(3);
+    moveHandler({play: 3});
    }
 
    const onClickPile4 = () =>{
     console.log("I've been clicked pile 4")
-    setPlay(4);
+    moveHandler({play: 4});
    }
 
    const onClickPile5 = () =>{
     console.log("I've been clicked pile 5")
-    setPlay(5);
+    moveHandler({play: 5});
    }
 
    const onClickPile6 = () =>{
     console.log("I've been clicked pile 6")
-    setPlay(6);
+    moveHandler({play: 6});
    }
 
    const onClickPile7 = () =>{
     console.log("I've been clicked pile 7")
-    setPlay(7);
+    moveHandler({play: 7});
    }
 
    const onClickPile8 = () =>{
     console.log("I've been clicked pile 8")
-    setPlay(8);
+    moveHandler({play: 8});
    }
+
+   const moveHandler = async (data) => {
+    console.log(room._id);
+    console.log(numPlayer);
+    if(numPlayer === 1)
+    {
+      await fetch(url + room.gameID + "/" + data.play + "/" + numPlayer, {
+        method: "PATCH",
+      });
+    } else if(numPlayer === 2)
+    {
+      let play = ((data.play + 4) % 8);
+      if(play === 0)
+      {
+        play = 8;
+      }
+      await fetch(url + room.gameID + "/" + play + "/" + numPlayer, {
+        method: "PATCH",
+      });
+    }
+    const emitEvent = () => {
+      socket.emit("california_play", {
+        id: room._id,
+      });
+  };
+  emitEvent();
+}
 
    // get all the cards ready
    useEffect(() => {
 
     (async () => {
-      //   const response = await request
-      // .get(url + room.gameID)
-      // .then(console.log("get request sent"))
-      // .catch((err) => console.log(err));
-
       const response = await fetch(url + room.gameID);
 
       if (!response.ok) {
@@ -94,6 +122,8 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
       setGameState(body);
       if(numPlayer === 1)
       {
+        setPlayer1deck(body.player2deck);
+        setPlayer2deck(body.player1deck);
         setPile1(body.pile1.reference);
         setPile2(body.pile2.reference);
         setPile3(body.pile3.reference);
@@ -104,6 +134,8 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
         setPile8(body.pile8.reference);
       }else if(numPlayer === 2)
       {
+        setPlayer1deck(body.player1deck);
+        setPlayer2deck(body.player2deck);
         setPile1(body.pile5.reference);
         setPile2(body.pile6.reference);
         setPile3(body.pile7.reference);
@@ -120,53 +152,51 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
   useEffect(() => {
 
     const getGameState = async () => {
-      const response = await request
-      .get(url + room.gameID);
-      setGameState(response.body);
+      console.log("getGameState from emit");
+      const response = await fetch(url + room.gameID);
+
+      if (!response.ok) {
+        const message = `An error occurred: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
+      
+      const body = await response.json();
+      console.log(body);
+      setGameState(body);
       if(numPlayer === 1)
       {
-        setPile1(gameState.pile1.reference);
-        setPile2(gameState.pile2.reference);
-        setPile3(gameState.pile3.reference);
-        setPile4(gameState.pile4.reference);
-        setPile5(gameState.pile5.reference);
-        setPile6(gameState.pile6.reference);
-        setPile7(gameState.pile7.reference);
-        setPile8(gameState.pile8.reference);
+        setPlayer1deck(body.player2deck);
+        setPlayer2deck(body.player1deck);
+        setPile1(body.pile1.reference);
+        setPile2(body.pile2.reference);
+        setPile3(body.pile3.reference);
+        setPile4(body.pile4.reference);
+        setPile5(body.pile5.reference);
+        setPile6(body.pile6.reference);
+        setPile7(body.pile7.reference);
+        setPile8(body.pile8.reference);
       }else if(numPlayer === 2)
       {
-        setPile1(gameState.pile5.reference);
-        setPile3(gameState.pile7.reference);
-        setPile4(gameState.pile8.reference);
-        setPile5(gameState.pile1.reference);
-        setPile6(gameState.pile2.reference);
-        setPile7(gameState.pile3.reference);
-        setPile8(gameState.pile4.reference);
-        setPile2(gameState.pile6.reference);
+        setPlayer1deck(body.player1deck);
+        setPlayer2deck(body.player2deck);
+        setPile1(body.pile5.reference);
+        setPile2(body.pile6.reference);
+        setPile3(body.pile7.reference);
+        setPile4(body.pile8.reference);
+        setPile5(body.pile1.reference);
+        setPile6(body.pile2.reference);
+        setPile7(body.pile3.reference);
+        setPile8(body.pile4.reference);
       }
     }
-
-    const moveHandler = async (data) => {
-      console.log(data);
-      if(numPlayer === 1)
-      {
-        await request.patch(url + room.gameID + "/" + data.play + "/" + numPlayer);
-        getGameState();
-      } else if(numPlayer === 2)
-      {
-        let play = (data.play + 4) % 8;
-        await request
-        .patch(url + room.gameID + "/" + play + "/" + numPlayer);
-        getGameState();
-      }
-    }
-    socket.on("california_play", moveHandler);
+    socket.on("california_play", getGameState);
 
     return () => {
-      socket.off("california_play", moveHandler);
+      socket.off("california_play", getGameState);
     };
     
-  }, [socket, play]);
+  }, [socket]);
 
 
   return (
@@ -175,9 +205,9 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
     <div className="cards">
         <Row xs={6}>
           <Col>
-            <div className="card">
-                <img src={cardBack} alt="back of card" onClick={player1HandOnClick}/>
-                <div className="textOverlay">{1}</div>
+            <div className="card" onClick={player1HandOnClick}>
+                <img src={cardBack} alt="back of card" />
+                <div className="textOverlay">{player1deck}</div>
             </div>
           </Col>
         </Row>
@@ -235,7 +265,7 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
           <Col>
             <div className="card">
                 <img src={cardBack} alt="back of card" onClick={player2HandOnClick} />
-                <div className="textOverlay">{1}</div>
+                <div className="textOverlay">{player2deck}</div>
             </div>
           </Col>
         </Row>

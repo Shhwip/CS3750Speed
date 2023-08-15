@@ -88,6 +88,10 @@ io.on("connection", (socket) => {
     io.to(data.id).emit("play_again", data);
   })
 
+  socket.on("california_play", (data) => {
+    console.log("california_play" + data.id);
+    io.to(data.id).emit("california_play", data);
+  })
  
   
   // added leave room socket

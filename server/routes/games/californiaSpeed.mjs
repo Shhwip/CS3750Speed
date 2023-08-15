@@ -1,5 +1,5 @@
 import express from 'express';
-import { createDeck, draw } from "./deck.mjs";
+import { createDeck, draw, shuffle } from "./deck.mjs";
 import db from "../../config/db.mjs";
 import CARDS from "../../resources/cardslist.mjs";
 import { ObjectId } from "mongodb";
@@ -104,13 +104,14 @@ californiaSpeed.get('/california/new', async (req, res) => {
 
 californiaSpeed.get('/california/:gameID', async (req, res) => {
     let result = await getGameState(req.params.gameID);
-    console.log(result);
-    console.log("return gamestate")
     res.send(result).status(200);
 });
 
 californiaSpeed.patch('/california/:gameID/:pile/:player', async (req, res) => {
+    console.log("play card");
+    console.log(req.params);
     let result = await playCard(req.params.gameID, req.params.pile, req.params.player);
+    console.log(result);
     res.send(result).status(200);
 });
 
@@ -129,22 +130,25 @@ californiaSpeed.get('/california/:gameID/shuffle', async (req, res) => {
     }
 });
 
+async function getInternalGameState(gameID)
+{
+    let query = { _id: new ObjectId(gameID) };
+    let collection = await db.collection("Games");
+    let gameState = await collection.findOne(query)
+    gameState.validPlays = [...gameState.validPlays, ...(validPlays(gameState))];
 
+    return Promise.resolve(gameState);
+}
 // ----------------------------------------------
 // return game state data from the database
 async function getGameState(gameID)
 {
-    console.log("--------------------");
-    console.log("gameID: " + gameID);
-    console.log("--------------------");
-    let query = { _id: new ObjectId(gameID) };
-    let collection = await db.collection("Games");
-    let gameState = await collection.findOne(query)
+    let gameState = await getInternalGameState(gameID);
     let result =
     {
         _id: gameState._id,
-        player1deck: gameState.player1deck.at(-1),
-        player2deck: gameState.player2deck.at(-1),
+        player1deck: gameState.player1deck.length,
+        player2deck: gameState.player2deck.length,
         pile1: gameState.pile1.at(-1),
         pile2: gameState.pile2.at(-1),
         pile3: gameState.pile3.at(-1),
@@ -153,6 +157,7 @@ async function getGameState(gameID)
         pile6: gameState.pile6.at(-1),
         pile7: gameState.pile7.at(-1),
         pile8: gameState.pile8.at(-1),
+        validPlays: gameState.validPlays
     }
     return Promise.resolve(result);
 
@@ -176,18 +181,17 @@ export async function startNewGame()
     return Promise.resolve(result);
 }
 
-// ----------------------------------------------
-// check if there are any valid plays
-function noValidPlay(gameState)
+function validPlays(gameState)
 {
+    let validPlays = new Array();
     for(let i = 1; i < 9; i++)
     {
         if(validPlay(i, gameState))
         {
-            return false;
+            validPlays.push(i);
         }
     }
-    return true;
+    return validPlays;
 }
 // ----------------------------------------------
 // valid play
@@ -195,30 +199,43 @@ function validPlay(pile, gameState)
 {
     // keep track of valid plays
     let card = gameState["pile" + pile].at(-1);
+    let valid = false;
     for(let i = 1; i < 9; i++)
     {
-        if(i === pile)
+        if(i == pile)
         {
             continue;
         }
         let other_card = gameState["pile" + i].at(-1);
         if(card.rank === other_card.rank)
         {
-            return true;
+            valid = true;
         }
     }
-    return false;
+    return valid;
 }
 
 async function playCard(gameID, pile, player)
 {
-    let gameState = (await getGameState(gameID)).gameState;
-    //TODO check if play is valid
-    console.log("valid play: " + validPlay(pile, gameState));
+    console.log("play card")
+    console.log(pile + " " + player)
+    let gameState = await getInternalGameState(gameID);
+    console.log(typeof pile);
+    pile = parseInt(pile);
+    console.log(gameState.validPlays);
+    console.log(gameState.validPlays.includes(pile));
+    if(gameState.validPlays.includes(pile) || validPlay(pile, gameState))
+    {
+        gameState.validPlays = gameState.validPlays.filter(e => e !== pile);
+    }else
+    {
+        return Promise.resolve("invalid play");
+    }
     let card;
-    if(player === "player1")
+    if(player === "1")
     {
         card = gameState.player1deck.pop();
+        console.log("player1 card: " + card);
         if(gameState.player1deck.length === 0)
         {
             win(player);
@@ -226,9 +243,10 @@ async function playCard(gameID, pile, player)
         }
 
     }
-    else if(player === "player2")
+    else if(player === "2")
     {
         card = gameState.player2deck.pop();
+        console.log("player2 card: " + card);
         if(gameState.player2deck.length === 0)
         {
             win(player);
@@ -252,7 +270,7 @@ async function playCard(gameID, pile, player)
 // scoop up the 4 piles into the player's deck, shuffle, and redeal
 async function scoop(gameID)
 {
-    let gameState = (await getGameState(gameID)).gameState;
+    let gameState = (await getInternalGameState(gameID));
     let player1deck = gameState.player1deck;
     let player2deck = gameState.player2deck;
 
@@ -296,6 +314,7 @@ async function reDeal(cardsPlayer1, cardsPlayer2)
         "pile6": [cardsPlayer2[2]],
         "pile7": [cardsPlayer1[3]],
         "pile8": [cardsPlayer2[3]],
+        "validPlays": []
     }
     return Promise.resolve(decks);
 }
