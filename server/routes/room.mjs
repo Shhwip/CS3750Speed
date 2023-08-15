@@ -130,6 +130,7 @@ router.put("/classicPlayAgain/:id", async (req, res) => {
   const { id } = req.params;
   let collection = db.collection("Game-Room");
   try {
+    console.log("play again is clicked")
     let cardReferences = await reshuffleCard();
 
     let user1Cards = cardReferences.slice(0, 20);
@@ -142,8 +143,14 @@ router.put("/classicPlayAgain/:id", async (req, res) => {
       { $set: { user1Cards, user2Cards, leftPile, rightPile } }
     );
     if (result.modifiedCount === 1) {
+      // Get the updated room data
+      const updatedRoom = await collection.findOne({ _id: new ObjectId(id) });
 
-      res.status(200).send({ message: "Shuffle card success" });
+      if (updatedRoom) {
+        res.status(200).send(updatedRoom);
+      } else {
+        res.status(500).send({ message: "Error fetching updated room data." });
+      }
     } else {
       res.status(500).send({ message: "Failed to update user2." });
     }
