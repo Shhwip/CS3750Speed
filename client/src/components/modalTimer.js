@@ -82,7 +82,7 @@ export default function NewTimer(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Joining in :
+          Joining in:
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
