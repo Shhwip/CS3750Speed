@@ -410,9 +410,8 @@ const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowClassic = {setShowClassic} userName={userName}/>
-      <Container className="container-classic">
         <div className="cards">
-          <Row xs={6} sm={6} md={6} lg={6}>
+          <Row className="m-0 p-0" xs={6} sm={6} md={6} lg={6}>
             <Col>
               <div className="card">
                 <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
@@ -510,10 +509,9 @@ const Classic = ({ numPlayer, room, setShowClassic, userName  }) => {
         </div>
         <Col>
           <div>
-            <button onClick={leaveRoomClick}>Leave Room</button>
+            <button className="leaveRoomBtn" onClick={leaveRoomClick}>Leave Room</button>
           </div>
         </Col>
-      </Container>
     </DndProvider>
   );
 };

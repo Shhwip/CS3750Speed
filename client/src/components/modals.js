@@ -19,7 +19,7 @@ export default function WaitingModal(props) {
         <Button onClick={props.handleClose} >
           Close
         </Button>
-        <Button disabled={false}>
+        <Button disabled={true}>
           Waiting
           <Spinner
             as="span"
