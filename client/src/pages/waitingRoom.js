@@ -82,7 +82,7 @@ const WaitingRoomPage = () => {
   useEffect(() => {
     if (startGame) {
       setTimeout(() => {
-        setShowCalifornia(true);
+        setShowClassic(true);
         setShowModal(false)
         setStartGame(false);
         setPlayerReady(0)
@@ -148,8 +148,8 @@ const WaitingRoomPage = () => {
   
   return (
     <>
-      {showCalifornia ? (
-        <CaliforniaSpeed numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
+      {showClassic ? (
+        <Classic numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
       ) : (
         <>
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
