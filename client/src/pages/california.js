@@ -201,7 +201,6 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
 
   return (
     <>
-    <Container className='container-california'>
     <div className="cards">
         <Row xs={6}>
           <Col>
@@ -271,7 +270,6 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
         </Row>
       </div>
       </div>
-    </Container> 
     </>
   );
 };
