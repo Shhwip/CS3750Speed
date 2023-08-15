@@ -34,14 +34,17 @@ code{
 }
 .row{
   justify-content: center;
-}
+} 
 
 .card{
-  justify-content: center;
+  justify-content: center; 
   padding: 1.5rem;
+  margin-left: 4rem;
   transition: 0.2s;
   box-shadow: 3px 3px 3px ;
+  width: 55%;
 }
+
 .card:hover, 
 .card:focus-within {
   transform: translatey(-1rem);
@@ -50,7 +53,10 @@ code{
 .card:focus-within ~ .card  {
   transform: translatex(var(--distance));
 }
-
+.leaveRoomBtn{
+  margin-top: 3rem;
+  margin-left: 3rem;
+}
 /*
 Classic and California game styles END
 */
@@ -76,15 +82,14 @@ Home rules styling
 Home rules styling END
 */
 
+
 /*
 Waiting Room styling
 */
 .waitingRoom-title{
   text-align: center;
   margin: 5%;
-
 }
-
 
 
 /*

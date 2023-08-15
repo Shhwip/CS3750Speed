@@ -5,6 +5,7 @@ import Timer from "../components/timer";
 import Classic from "./classic";
 import { useNavigate } from "react-router-dom";
 import WaitingModal from "../components/modals";
+import TimerModal from "../components/modalTimer";
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
 
@@ -20,6 +21,7 @@ const WaitingRoomPage = () => {
   const [startGame, setStartGame] = useState(false);
   const [showClassic, setShowClassic] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showModalTimer, setShowModalTimer] = useState(false);
   const navigate = useNavigate();
 
   const fetchRoom = async () => {
@@ -64,6 +66,8 @@ const WaitingRoomPage = () => {
       setPlayerReady(data.numPlayerReady);
       if (data.numPlayerReady === 2) {
         setStartGame(true);
+        setShowModal(false);
+        setShowModalTimer(true);
       }
     };
 
@@ -78,7 +82,6 @@ const WaitingRoomPage = () => {
     if (startGame) {
       setTimeout(() => {
         setShowClassic(true);
-        setShowModal(false)
         setStartGame(false);
         setPlayerReady(0)
       }, 3000); // 3 seconds
@@ -90,6 +93,7 @@ const WaitingRoomPage = () => {
     setPlayerReady(updatedNumPlayerReady)
     socket.emit("join_room", { roomId: room._id, numPlayerReady: updatedNumPlayerReady });
     setShowModal(true);
+
   };
 
   const handlePlayerClose = () => {
@@ -133,12 +137,13 @@ const WaitingRoomPage = () => {
   })
 
   if (numPlayerReady == 0) {
-    var t = "NO"
+    var checkPlayerReady = "NO"
   }
   else {
-    t = "YES"
+    checkPlayerReady = "YES"
   }
 
+  
   return (
     <>
       {showClassic ? (
@@ -147,13 +152,13 @@ const WaitingRoomPage = () => {
         <>
           <h1 className="waitingRoom-title">{"WAITING ROOM"} </h1>
           <h2>{"Game Type: " + room.gameType}</h2>
-          <CardGroup className="w-50">
+          <CardGroup className="position-relative w-50">
             <Card className="m-5">
               <Card.Img variant="top" src="https://images.squarespace-cdn.com/content/v1/50f79c6fe4b00d3480c9bbf0/1603139268457-L8WP2GF1EDTQS1YIEJLY/LinkedIn-Silhouette.jpg" />
               <Card.Body>
                 <Card.Title>USER:</Card.Title>
                 <Card.Text>
-                  {room.user1}
+                  {(numPlayer===1) ? room.user1 : room.user2}
                 </Card.Text>
               </Card.Body>
               <Card.Footer>
@@ -166,15 +171,15 @@ const WaitingRoomPage = () => {
               <Card.Body>
                 <Card.Title>USER:</Card.Title>
                 <Card.Text>
-                  {room.user2}
+                  {(numPlayer===2) ? room.user1 : room.user2}
                 </Card.Text>
                 <Card.Footer>
-                  Player Ready: {t}
+                  Player Ready: {checkPlayerReady}
                 </Card.Footer>
               </Card.Body>
             </Card>
             <div className="m-5">
-              {startGame ? <Timer /> : null}
+              {startGame ? <TimerModal show={showModalTimer} onHide={() => setShowModalTimer(false)} /> : null}
             </div>
           </CardGroup>
           <div className="row">
