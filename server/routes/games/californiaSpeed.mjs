@@ -144,6 +144,15 @@ async function getInternalGameState(gameID)
 async function getGameState(gameID)
 {
     let gameState = await getInternalGameState(gameID);
+    let winner = 0;
+    if(gameState.player1deck.length === 0)
+    {
+        winner = 1;
+    }
+    else if(gameState.player2deck.length === 0)
+    {
+        winner = 2;
+    }
     let result =
     {
         _id: gameState._id,
@@ -157,7 +166,8 @@ async function getGameState(gameID)
         pile6: gameState.pile6.at(-1),
         pile7: gameState.pile7.at(-1),
         pile8: gameState.pile8.at(-1),
-        validPlays: gameState.validPlays
+        validPlays: gameState.validPlays,
+        winner: winner
     }
     return Promise.resolve(result);
 
@@ -220,7 +230,7 @@ async function playCard(gameID, pile, player)
     console.log("play card")
     console.log(pile + " " + player)
     let gameState = await getInternalGameState(gameID);
-    console.log(typeof pile);
+    console.log(gameState);
     pile = parseInt(pile);
     console.log(gameState.validPlays);
     console.log(gameState.validPlays.includes(pile));
@@ -239,7 +249,6 @@ async function playCard(gameID, pile, player)
         if(gameState.player1deck.length === 0)
         {
             win(player);
-            return Promise.resolve("player1 wins");
         }
 
     }
@@ -250,14 +259,13 @@ async function playCard(gameID, pile, player)
         if(gameState.player2deck.length === 0)
         {
             win(player);
-            return Promise.resolve("player2 wins");
         }
         
     }
 
     gameState["pile" + pile].push(card);
     let collection = db.collection("Games");
-    let result = collection.updateOne({_id: new ObjectId(gameID)}, {$set: gameState}); // NO AWAIT HERE BECAUSE WE WANT SPEEEEEEED
+    let result = await collection.updateOne({_id: new ObjectId(gameID)}, {$set: gameState}); 
     gameState =
     {
         "gameID": gameID,
@@ -274,17 +282,25 @@ async function scoop(gameID)
     let player1deck = gameState.player1deck;
     let player2deck = gameState.player2deck;
 
-    for(let i = 0; i < 5; i++)
-    {
-        for(let cards in gameState["pile" + (i * 2 + 2)])//even piles are player2
-        {
-            player2deck.push(gameState["pile" + (i * 2 + 2)][cards]);
-        }
-        for(let cards in gameState["pile" + (i * 2 + 1)])//odd piles are player1
-        {
-            player1deck.push(gameState["pile" + (i * 2 + 1)][cards]);
-        }
-    }
+    // for(let i = 0; i < 5; i++)
+    // {
+    //     for(let cards in gameState["pile" + (i * 2 + 2)])//even piles are player2
+    //     {
+    //         player2deck.push(gameState["pile" + (i * 2 + 2)][cards]);
+    //     }
+    //     for(let cards in gameState["pile" + (i * 2 + 1)])//odd piles are player1
+    //     {
+    //         player1deck.push(gameState["pile" + (i * 2 + 1)][cards]);
+    //     }
+    // }
+    player1deck.push(...gameState.pile5);
+    player1deck.push(...gameState.pile6);
+    player1deck.push(...gameState.pile7);
+    player1deck.push(...gameState.pile8);
+    player2deck.push(...gameState.pile1);
+    player2deck.push(...gameState.pile2);
+    player2deck.push(...gameState.pile3);
+    player2deck.push(...gameState.pile4);
 
     let collection = db.collection("Games");
     shuffle(gameState.player1deck);

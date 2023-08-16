@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react";
 import cardBack from "../png/cardBack.png";
 import spades_2 from "../png/2_of_spades.png"
 import Col from "react-bootstrap/Col";
+import Modal from "react-bootstrap/Modal";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import socket from "../socket";
+import GameResult from "../components/GameResult";
+import { Button } from "react-bootstrap";
 
 const request = require("superagent");
 const url = "http://localhost:5050/game/california/";
 
-const CaliforniaSpeed = ({ numPlayer, room}) => {
+const CaliforniaSpeed = ({ numPlayer, room, userName, setShowGame}) => {
   const [gameState, setGameState] = useState({})
   const [pile1, setPile1] = useState("cardBack");
   const [pile2, setPile2] = useState("cardBack");
@@ -19,19 +22,17 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
   const [pile6, setPile6] = useState("cardBack");
   const [pile7, setPile7] = useState("cardBack");
   const [pile8, setPile8] = useState("cardBack");
+
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isWinner, setIsWinner] = useState(false);
+
+  const [noValid, setNoValid] = useState(false);
   
   const [player1deck, setPlayer1deck] = useState(cardBack);
   const [player2deck, setPlayer2deck] = useState(cardBack);
 
    const player1HandOnClick = async () =>{
     console.log("I've been clicked player 1 hand")
-    await fetch(url + room.gameID + "/" + "scoop", {
-      method: "PATCH"
-    });
-
-      socket.emit("california_play", {
-        id: room._id,
-      });
    }
 
    const player2HandOnClick = () =>{
@@ -163,7 +164,19 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
       
       const body = await response.json();
       console.log(body);
+      if(body.winner != 0)
+      {
+        setIsGameOver(true);
+        if(body.winner == numPlayer)
+        {
+          setIsWinner(true);
+        }
+      }
       setGameState(body);
+      if(body.validPlays.length === 0)
+      {
+        setNoValid(true);
+      }
       if(numPlayer === 1)
       {
         setPlayer1deck(body.player2deck);
@@ -198,9 +211,29 @@ const CaliforniaSpeed = ({ numPlayer, room}) => {
     
   }, [socket]);
 
+  const scoop = async () => {
+    await fetch(url + room.gameID + "/" + "scoop", {
+      method: "PATCH"
+    });
 
+      socket.emit("california_play", {
+        id: room._id,
+      });
+      setNoValid(false);
+  }
+  const handleClose = () => setNoValid(false);
   return (
     <>
+    <Modal show={noValid} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>No Valid Moves</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>There are no valid moves for you to make. Please click to scoop and redeal.</Modal.Body>
+        <Button variant="primary" onClick={scoop}>
+          Scoop
+        </Button>
+      </Modal>
+    <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowGame = {setShowGame} userName={userName}/>
     <div className="cards">
         <Row xs={6}>
           <Col>
