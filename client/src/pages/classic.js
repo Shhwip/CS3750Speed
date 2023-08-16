@@ -48,9 +48,8 @@ const DroppableArea = ({ onDrop, cardRef, isValidDrop }) => {
   );
 };
 
-const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
-  console.log("username: ")
-  console.log(userName)
+const Classic = ({ numPlayer, room, setShowGame, setRoom, userName }) => {
+
   const [cards, setCards] = useState([]);
   const [opponentCard, setOponentCard] = useState([]);
   const [cardIndex, setCardIndex] = useState(5);
@@ -82,7 +81,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
       ...room.leftPile.map((item) => item),
       ...room.rightPile.map((item) => item),
     ]);
-    
+
     const emitEvent = () => {
       let opponentCards = [
         selectedCards[0],
@@ -136,7 +135,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
           setLeftPile(data.leftPile);
           setRightPile(data.rightPile);
         }
-        
+
         setPileIndex(data.pileIndex);
         setGameOver(data.gameOver);
       }
@@ -175,7 +174,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
     const difference = Math.abs(droppedRank - currentRank);
     if ((droppedRank === 1 && currentRank === 13) || (droppedRank === 13 && currentRank === 1)) {
       return true;
-  }
+    }
     return difference === 1; // Return true if ranks differ by 1, else false
   };
 
@@ -205,7 +204,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
 
   //-------------------------check game over---------------------------------------
   const checkWinner = (currentHandCard) => {
-   
+
     // Check if all cards are empty and cardIndex is 20
     if (
       currentHandCard.every((card) => card === "" || card === "no-card") &&
@@ -225,42 +224,38 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
   const handleLeftCardDrop = async (droppedCardRef) => {
     // Logic for when a card is dropped on the left card
     setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
-
     setLeftCard(droppedCardRef);
-    const currentHandCard = await removeDroppedCard(droppedCardRef);
-    
-    const emitEvent = () => {
-      socket.emit("classic_play", {
-        id: room._id,
-        leftCard: droppedCardRef,
-        rightCard: rightCard,
-        pileIndex: pileIndex,
-        opponentCard: currentHandCard,
-        gameOver: checkWinner(currentHandCard),
-      });
-    };
 
-    emitEvent();
+    const currentHandCard = await removeDroppedCard(droppedCardRef);
+
+    socket.emit("classic_play", {
+      id: room._id,
+      leftCard: droppedCardRef,
+      rightCard: rightCard,
+      pileIndex: pileIndex,
+      opponentCard: currentHandCard,
+      gameOver: checkWinner(currentHandCard),
+    });
   };
+
 
   const handleRightCardDrop = async (droppedCardRef) => {
     // Logic for when a card is dropped on the right card
     setUsedCard((prevArray) => [...prevArray, droppedCardRef]);
     setRightCard(droppedCardRef);
-    const currentHandCard = await removeDroppedCard(droppedCardRef);
-    const emitEvent = () => {
-      socket.emit("classic_play", {
-        id: room._id,
-        leftCard: leftCard,
-        rightCard: droppedCardRef,
-        pileIndex: pileIndex,
-        opponentCard: currentHandCard,
-        gameOver: checkWinner(currentHandCard),
-      });
-    };
 
-    emitEvent();
+    const currentHandCard = await removeDroppedCard(droppedCardRef);
+
+    socket.emit("classic_play", {
+      id: room._id,
+      leftCard: leftCard,
+      rightCard: droppedCardRef,
+      pileIndex: pileIndex,
+      opponentCard: currentHandCard,
+      gameOver: checkWinner(currentHandCard),
+    });
   };
+
   //----------------------------------------------------------
 
   //-------------------------handle card click ---------------------------------
@@ -287,8 +282,9 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
         opponentCards[i] = cards[tempCardIndex];
         cardSetters[i](cards[tempCardIndex]);
         tempCardIndex++;
-      } else if (cardValues[i] === "" && tempCardIndex === 20) {
+      } else if (cardValues[i] === "" && tempCardIndex == 20) {
         cardSetters[i]("no-card");
+        opponentCards[i] = "no-card";
       }
     }
 
@@ -331,15 +327,17 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
 
   const handlePileClick = () => {
     let tempIndex = pileIndex;
-    if ([card1, card2, card3, card4, card5].some((card) => card === "")) return;
-    if (opponentCard.some((card) => card === "")) return;
-
+    
+    
     const cardsList = [card1, card2, card3, card4, card5];
     console.log("pile click")
     console.log("opponent: ")
     console.log(opponentCard)
     console.log("Card: ")
     console.log(cardsList)
+    if ([card1, card2, card3, card4, card5].some((card) => card === "")) return;
+    if (opponentCard.some((card) => card === "")) return;
+
 
     if (areAllCardsInvalid(cardsList, leftCard, rightCard) && areAllCardsInvalid(opponentCard, leftCard, rightCard)) {
       setLeftCard(leftPile[tempIndex]);
@@ -350,13 +348,13 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
       let tempRightPile = [];
 
       if (tempIndex == leftPile.length - 1 || tempIndex == rightPile.length - 1) {
-     
+
         const cardShuffle = shuffleArray(usedCard);
         const halfwayPoint = Math.ceil(cardShuffle.length / 2);
         tempLeftPile = cardShuffle.slice(0, halfwayPoint);
         tempRightPile = cardShuffle.slice(halfwayPoint);
         tempIndex = 0;
-       
+
 
         setLeftPile(tempLeftPile);
         setRightPile(tempRightPile);
@@ -374,7 +372,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
           pileIndex: tempIndex,
           opponentCard: opponentCards,
           gameOver: isGameOver,
-          
+
         });
       };
 
@@ -409,109 +407,109 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <GameResult gameOver={isGameOver} isWinner={isWinner} id = {room._id} setShowGame = {setShowGame} userName={userName}/>
-        <div className="cards">
-          <Row className="m-0 p-0" xs={6} sm={6} md={6} lg={6}>
-            <Col>
-              <div className="card">
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-              </div>
-            </Col>
-            <Col>
-              <div className="card">
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-              </div>
-            </Col>
-            <Col>
-              <div className="card">
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-              </div>
-            </Col>
-            <Col>
-              <div className="card">
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-              </div>
-            </Col>
-            <Col>
-              <div className="card">
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-              </div>
-            </Col>
-            <Col>
-              <div className="card">
-                <img src={cardBack} alt="back of card" />
-                {/*
+      <GameResult gameOver={isGameOver} isWinner={isWinner} id={room._id} setShowGame={setShowGame} userName={userName} setRoom={setRoom} />
+      <div className="cards">
+        <Row className="m-0 p-0" xs={6} sm={6} md={6} lg={6}>
+          <Col>
+            <div className="card">
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+            </div>
+          </Col>
+          <Col>
+            <div className="card">
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+            </div>
+          </Col>
+          <Col>
+            <div className="card">
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+            </div>
+          </Col>
+          <Col>
+            <div className="card">
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+            </div>
+          </Col>
+          <Col>
+            <div className="card">
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+            </div>
+          </Col>
+          <Col>
+            <div className="card">
+              <img src={cardBack} alt="back of card" />
+              {/*
                   <div className="textOverlay">{cards.length}</div>
                 */}
-              </div>
-            </Col>
-          </Row>
-        </div>
-        <div className="cards">
-          <Row xs={6} sm={6} md={6} lg={6} className="row">
-            <Col>
-              <div className="card" onClick={handlePileClick}>
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                {/*
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <div className="cards">
+        <Row xs={6} sm={6} md={6} lg={6} className="row">
+          <Col>
+            <div className="card" onClick={handlePileClick}>
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+              {/*
                 <div className="textOverlay">{leftPile.length - pileIndex}</div>
                 */}
-              </div>
-            </Col>
-            <Col>
-              <DroppableArea
-                onDrop={handleLeftCardDrop}
-                cardRef={leftCard}
-                isValidDrop={isValidDrop}
-              />
-            </Col>
-            <Col>
-              <DroppableArea
-                onDrop={handleRightCardDrop}
-                cardRef={rightCard}
-                isValidDrop={isValidDrop}
-              />
-            </Col>
-            <Col>
-              <div className="card" onClick={handlePileClick}>
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                {/*<div className="textOverlay">
+            </div>
+          </Col>
+          <Col>
+            <DroppableArea
+              onDrop={handleLeftCardDrop}
+              cardRef={leftCard}
+              isValidDrop={isValidDrop}
+            />
+          </Col>
+          <Col>
+            <DroppableArea
+              onDrop={handleRightCardDrop}
+              cardRef={rightCard}
+              isValidDrop={isValidDrop}
+            />
+          </Col>
+          <Col>
+            <div className="card" onClick={handlePileClick}>
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+              {/*<div className="textOverlay">
                   {rightPile.length - pileIndex}
                 </div>*/}
-              </div>
-            </Col>
-          </Row>
-        </div>
+            </div>
+          </Col>
+        </Row>
+      </div>
 
-        <div className="cards">
-          <Row xs={6}>
-            <Col>
-              <DraggableCard cardRef={card1} />
-            </Col>
-            <Col>
-              <DraggableCard cardRef={card2} />
-            </Col>
-            <Col>
-              <DraggableCard cardRef={card3} />
-            </Col>
-            <Col>
-              <DraggableCard cardRef={card4} />
-            </Col>
-            <Col>
-              <DraggableCard cardRef={card5} />
-            </Col>
-            <Col>
-              <div className="card" onClick={handleCardClick}>
-                <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
-                <div className="textOverlay">{cards.length - cardIndex}</div>
-              </div>
-            </Col>
-          </Row>
+      <div className="cards">
+        <Row xs={6}>
+          <Col>
+            <DraggableCard cardRef={card1} />
+          </Col>
+          <Col>
+            <DraggableCard cardRef={card2} />
+          </Col>
+          <Col>
+            <DraggableCard cardRef={card3} />
+          </Col>
+          <Col>
+            <DraggableCard cardRef={card4} />
+          </Col>
+          <Col>
+            <DraggableCard cardRef={card5} />
+          </Col>
+          <Col>
+            <div className="card" onClick={handleCardClick}>
+              <img src={require(`./../png/cardBack.png`)} alt={"cardBack"} />
+              <div className="textOverlay">{cards.length - cardIndex}</div>
+            </div>
+          </Col>
+        </Row>
+      </div>
+      <Col>
+        <div>
+          <button className="leaveRoomBtn" onClick={leaveRoomClick}>Leave Room</button>
         </div>
-        <Col>
-          <div>
-            <button className="leaveRoomBtn" onClick={leaveRoomClick}>Leave Room</button>
-          </div>
-        </Col>
+      </Col>
     </DndProvider>
   );
 };

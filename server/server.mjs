@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(socket.id + " disconnected");
   });
-});
+}); 
 
 httpServer.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);

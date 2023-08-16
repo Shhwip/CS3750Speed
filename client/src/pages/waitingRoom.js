@@ -152,7 +152,7 @@ const WaitingRoomPage = () => {
   
   return (
     <>
-      {showGame ? ( room.gameType === "Classic" ? <Classic numPlayer={numPlayer} room={room} setShowGame={setShowGame} setStartGame={setStartGame} userName={userName} /> :
+      {showGame ? ( room.gameType === "Classic" ? <Classic numPlayer={numPlayer} room={room} setShowGame={setShowGame} setRoom = {setRoom} userName={userName} /> :
         <CaliforniaSpeed numPlayer={numPlayer} room={room} setShowClassic={setShowClassic} setPlayerReady={setPlayerReady} setStartGame={setStartGame} userName={userName} />
       ) : (
         <>
