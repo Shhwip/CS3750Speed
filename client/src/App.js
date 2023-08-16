@@ -25,7 +25,7 @@ function App() {
 
   const fetchUserAuth = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5050/api/authentication/isAuth", {
+      const res = await fetch("http://3.89.204.193:5050/api/authentication/isAuth", {
         credentials: "include",
       });
       

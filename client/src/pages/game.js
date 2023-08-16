@@ -19,7 +19,7 @@ const Game = () => {
   */
   const NewDeckClick = async () => {
     console.log("NewDeck got click")
-    await fetch(`http://localhost:5050/deck/new`, {
+    await fetch(`http://3.89.204.193:5050/deck/new`, {
       method: "POST",
     })
       .then((response) => {
@@ -55,7 +55,7 @@ const Game = () => {
       const deckPile1 = { pile_name: "pile_1", number_of_cards: 26 };
       try {
         let response = await fetch(
-          `http://localhost:5050/new_pile/${deckId}/`,
+          `http://3.89.204.193:5050/new_pile/${deckId}/`,
           {
             method: "POST",
             headers: {
@@ -71,7 +71,7 @@ const Game = () => {
         setPileId1(data.new_pile._id);
 
         const deckPile2 = { pile_name: "pile_2", number_of_cards: 26 };
-        response = await fetch(`http://localhost:5050/new_pile/${deckId}/`, {
+        response = await fetch(`http://3.89.204.193:5050/new_pile/${deckId}/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -96,7 +96,7 @@ const Game = () => {
   */
   const deck1Click = async () => {
     await fetch(
-      `http://localhost:5050/draw/${pileId1}/${numberOfCardsToDraw}`,
+      `http://3.89.204.193:5050/draw/${pileId1}/${numberOfCardsToDraw}`,
       {
         method: "PATCH",
       }
@@ -118,7 +118,7 @@ const Game = () => {
   */
   const deck2Click = async () => {
     await fetch(
-      `http://localhost:5050/draw/${pileId2}/${numberOfCardsToDraw}`,
+      `http://3.89.204.193:5050/draw/${pileId2}/${numberOfCardsToDraw}`,
       {
         method: "PATCH",
       }
@@ -144,7 +144,7 @@ const Game = () => {
     setDrawPile1("");
     setDrawPile2("");
     const shuffledDeck =  { piles: [shuffled, pileId1, pileId2] };
-    await fetch(`http://localhost:5050/combine/shuffledDeck`, {
+    await fetch(`http://3.89.204.193:5050/combine/shuffledDeck`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

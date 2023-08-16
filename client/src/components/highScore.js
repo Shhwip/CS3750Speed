@@ -19,7 +19,7 @@ export default function Highscore({userName}) {
  // This method fetches the records from the database.
  useEffect(() => {
    async function getRecords() {
-     const response = await fetch(`http://localhost:5050/record/`);
+     const response = await fetch(`http://3.89.204.193:5050/record/`);
      console.log(response);
     console.log("looking for records");
      if (!response.ok) {
@@ -55,7 +55,7 @@ export default function Highscore({userName}) {
   // fetch a single record
   useEffect(()=>{
     async function singleRecord() {
-      const response = await fetch(`http://localhost:5050/record/${userName}`);
+      const response = await fetch(`http://3.89.204.193:5050/record/${userName}`);
       if (!response.ok) {
         const message = `An error occurred: ${response.statusText}`;
         window.alert(message);

@@ -2,7 +2,7 @@
 // const request = require('supertest');
 // import App from './App';
 
-// const url = 'http://localhost:5050';
+// const url = 'http://3.89.204.193:5050';
 // let deck_id = '';
 // let pile_id1 = '';
 // let pile_id2 = '';

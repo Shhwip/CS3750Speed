@@ -78,7 +78,7 @@ export default function RegisterForm() {
         password: hashPassword,
         salt: salt,
       };
-      await fetch("http://localhost:5050/api/authentication/register", {
+      await fetch("http://3.89.204.193:5050/api/authentication/register", {
         method: "POST",
         credentials: 'include',
         headers: {

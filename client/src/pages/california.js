@@ -7,7 +7,7 @@ import Row from "react-bootstrap/Row";
 import socket from "../socket";
 
 const request = require("superagent");
-const url = "http://localhost:5050/game/california/";
+const url = "http://3.89.204.193:5050/game/california/";
 
 const CaliforniaSpeed = ({ numPlayer, room}) => {
   const [gameState, setGameState] = useState({})

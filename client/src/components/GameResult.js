@@ -49,7 +49,7 @@ function GameResult({ gameOver, isWinner, id, setShowGame, userName }) {
   async function handlePlayAgain(){
     if(!isClickedPlayAgain){
         setIsClickedPlayAgain(true);
-        await fetch(`http://localhost:5050/api/room/classicPlayAgain/${id}`, {
+        await fetch(`http://3.89.204.193:5050/api/room/classicPlayAgain/${id}`, {
             method: "PUT",
             credentials: "include",
 
@@ -80,7 +80,7 @@ function GameResult({ gameOver, isWinner, id, setShowGame, userName }) {
     const roomId = { id: id};
     try {
       const response = await fetch(
-        `http://localhost:5050/api/room/deleteRoom/${id}`,
+        `http://3.89.204.193:5050/api/room/deleteRoom/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -104,7 +104,7 @@ function GameResult({ gameOver, isWinner, id, setShowGame, userName }) {
   const updateRecord = async() => {
     try {
       console.log(isWinner);
-      const response = await fetch(`http://localhost:5050/record/`, {
+      const response = await fetch(`http://3.89.204.193:5050/record/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

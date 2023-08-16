@@ -6,7 +6,7 @@ function Logout({ setAuthentiation }) {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5050/api/authentication/logout", {
+      const response = await fetch("http://3.89.204.193:5050/api/authentication/logout", {
         method: "POST",
         credentials: "include",
       });

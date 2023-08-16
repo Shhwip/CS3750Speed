@@ -28,7 +28,7 @@ const WaitingRoomPage = () => {
 
   const fetchRoom = async () => {
     try {
-      const response = await fetch(`http://localhost:5050/api/room/getRoom/${id}`, { method: "GET", credentials: "include" });
+      const response = await fetch(`http://3.89.204.193:5050/api/room/getRoom/${id}`, { method: "GET", credentials: "include" });
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to fetch room");
@@ -113,7 +113,7 @@ const WaitingRoomPage = () => {
     const roomId = {id: id }
     console.log(roomId);
   try {
-      const response = await fetch(`http://localhost:5050/api/room/deleteRoom/${id}`, { 
+      const response = await fetch(`http://3.89.204.193:5050/api/room/deleteRoom/${id}`, { 
         method: "DELETE",
         body: JSON.stringify({_id: roomId})
       });

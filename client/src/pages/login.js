@@ -38,7 +38,7 @@ export default function LoginPage({setAuthentiation, onLoginSuccess}) {
             const password = form.elements.password.value;
             let clientHashedPassword = ""
             // Fetch the salt
-            const saltResponse = await fetch("http://localhost:5050/api/authentication/getSalt", {
+            const saltResponse = await fetch("http://3.89.204.193:5050/api/authentication/getSalt", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function LoginPage({setAuthentiation, onLoginSuccess}) {
                 console.error('Error:', error);
             });
 
-            const isMatch = await fetch("http://localhost:5050/api/authentication/login", {
+            const isMatch = await fetch("http://3.89.204.193:5050/api/authentication/login", {
                 method: "POST",
                 credentials: 'include',
                 headers: {

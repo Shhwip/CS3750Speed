@@ -387,7 +387,7 @@ const Classic = ({ numPlayer, room, setShowGame, userName  }) => {
     const roomId = { id: room._id };
     try {
       const response = await fetch(
-        `http://localhost:5050/api/room/deleteRoom/${room._id}`,
+        `http://3.89.204.193:5050/api/room/deleteRoom/${room._id}`,
         {
           method: "DELETE",
           body: JSON.stringify({ _id: roomId }),

@@ -25,7 +25,7 @@ const port = 5050;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "http://3.89.204.193:3000", credentials: true }));
 app.use("/", deck);
 app.use("/game", californiaSpeed);
 app.use("/classicSpeed", classicSpeed);
@@ -47,7 +47,7 @@ app.use('/record', record);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://3.89.204.193:3000",
     methods: ["GET", "POST"],
   }
 });
@@ -108,5 +108,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Socket.IO server running at http://localhost:${port}/`);
+  console.log(`Socket.IO server running at http://3.89.204.193:${port}/`);
 });

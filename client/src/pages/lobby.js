@@ -19,7 +19,7 @@ function LobbyPage({ userName }) {
     let room = {};
     console.log(selectedGame);
     const newRoom = { gameType: selectedGame, user1: userName };
-    await fetch("http://localhost:5050/api/room/createRoom", {
+    await fetch("http://3.89.204.193:5050/api/room/createRoom", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -49,7 +49,7 @@ function LobbyPage({ userName }) {
   async function JoinRoom(roomId) {
     const newUser = {roomId: roomId, user2: userName}
     let room = {};
-    await fetch("http://localhost:5050/api/room/updateUser2", {
+    await fetch("http://3.89.204.193:5050/api/room/updateUser2", {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -77,7 +77,7 @@ function LobbyPage({ userName }) {
     async function fetchRooms() {
       try {
         const response = await fetch(
-          "http://localhost:5050/api/room/getRooms",
+          "http://3.89.204.193:5050/api/room/getRooms",
           {
             method: "GET",
             credentials: "include",

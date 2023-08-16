@@ -1,7 +1,7 @@
 const request = require('supertest');
 import App from './App';
 
-const url = 'http://localhost:5050';
+const url = 'http://3.89.204.193:5050';
 var gameID = null;
 var gameState = null;
 
