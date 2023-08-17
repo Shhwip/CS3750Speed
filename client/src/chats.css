@@ -33,11 +33,13 @@
 }
 
 #check:checked ~ .chat-wrapper {
+    display: block;
     opacity: 1;
 }
 
 /* Chat wrapper styles */
 .chat-wrapper {
+    display: none;
     opacity: 0;
     position: fixed;
     right: 60px;
